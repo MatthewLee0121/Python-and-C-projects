@@ -1,0 +1,17 @@
+import turtle
+
+turtle.setup(width=500, height=889)
+turtle.bgcolor('black')
+t = turtle.Turtle()
+t.speed(0)
+rainbow = ['red', 'orange', 'yellow', 'green', 'blue', 'indigo', 'dark violet']
+for i in range(400):
+    t.speed(10)
+    t.forward(200)
+    t.left(135)
+    t.left(89)
+    t.pencolor(rainbow[i % 7])
+
+turtle.mainloop()
+
+

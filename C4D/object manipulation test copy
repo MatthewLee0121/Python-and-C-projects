@@ -1,0 +1,26 @@
+import c4d
+from math import sin, cos, radians
+
+def main():
+    doc = c4d.documents.GetActiveDocument()
+    current_frame = doc.GetTime().GetFrame(doc.GetFps())
+    cube = doc.SearchObject("Cube")
+    #set main function for the python tag also gets current frame
+    # and cube object from the scene
+    if cube:
+        t = radians(current_frame * 8)
+        circle_radius = 10000  # Adjust the radius as needed
+        circle_center = c4d.Vector(0, 0, 0)  # Adjust the center coordinates as needed
+        #if statement for if a cube and math delarations referencing current frame
+        current_position = cube.GetAbsPos()
+        #sets current position = to the cubes position
+        current_position.x = circle_center.x + (circle_radius * sin(t))
+        current_position.y = circle_center.y + (circle_radius * cos(t))
+        # x2 equations to tie the x and y coordinates to a cirular path 
+        cube.SetAbsPos(current_position)
+        c4d.EventAdd()
+        #updates the position of the cube and updates the scene
+
+if __name__=='__main__':
+    main()
+    

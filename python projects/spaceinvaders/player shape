@@ -1,0 +1,50 @@
+import tkinter as tk
+# Create a themed Tkinter window
+window = tk.Tk()
+
+# Set window title
+window.title("Color at Pointer")
+
+# Add some styling
+window.geometry("300x150")  # Set initial size
+window.configure(bg="#f0f0f0")  # Set background color
+
+# Create a fancy label for displaying the color
+color_label = tk.Label(
+    window,
+    text="Move your pointer to get the color.",
+    font=("Helvetica", 14),  # Set font family and size
+    bg="#f0f0f0",            # Set background color
+)
+color_label.pack(pady=20)  # Set vertical padding
+
+# Create a colorful button to close the window
+close_button = tk.Button(
+    window,
+    text="Close",
+    command=window.destroy,
+    font=("Helvetica", 12),  # Set font family and size
+    bg="#4CAF50",            # Set background color (green)
+    fg="white",              # Set text color
+    padx=10,                 # Set horizontal padding
+    pady=5,                  # Set vertical padding
+    relief="flat",           # Set border decoration
+)
+close_button.pack(pady=5)  # Set vertical padding
+
+# Create a button to copy hex value to clipboard
+copy_button = tk.Button(
+    window,
+    text="Copy to Clipboard",
+    command=copy_to_clipboard,
+    font=("Helvetica", 12),  # Set font family and size
+    bg="#008CBA",            # Set background color (blue)
+    fg="white",              # Set text color
+    padx=10,                 # Set horizontal padding
+    pady=5,                  # Set vertical padding
+    relief="flat",           # Set border decoration
+)
+copy_button.pack(pady=5)  # Set vertical padding
+
+# Start the Tkinter main loop
+window.mainloop()

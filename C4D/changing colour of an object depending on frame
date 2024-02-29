@@ -1,0 +1,114 @@
+import c4d
+
+def main():
+    # Get the current frame
+    current_frame = doc.GetTime().GetFrame(doc.GetFps())
+
+    # Set the frame range for color change
+    start_frame = 0
+    middle_frame = 180
+    end_frame = 359
+    cube = doc.SearchObject("Cube")
+
+    # Check if the current frame is within the specified range
+    if start_frame <= current_frame <= middle_frame:
+        # Set the cube color (replace #102344 with the desired color)
+        cube[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.062, 0.137, 0.266)
+
+        # Update the scene
+        c4d.EventAdd()
+    elif middle_frame <= current_frame <= end_frame:
+        cube[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.267, 0.686, 1.0)
+        c4d.EventAdd()
+
+if __name__=='__main__':
+    main()
+    
+    
+import c4d
+
+def main():
+    # Get the current frame
+    current_frame = doc.GetTime().GetFrame(doc.GetFps())
+    cube = doc.SearchObject("Cube")
+
+    # Check if the current frame is within the specified range
+    if current_frame % 2 == 0 or current_frame % 3 == 0:
+        # Set the cube color (replace #102344 with the desired color)
+        cube[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.062, 0.137, 0.266)
+
+        # Update the scene
+        c4d.EventAdd()
+    else:
+        cube[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.267, 0.686, 1.0)
+        c4d.EventAdd()
+
+if __name__=='__main__':
+    main()
+    
+    
+import c4d
+def main():
+    # Get the current frame
+    current_frame = doc.GetTime().GetFrame(doc.GetFps())
+
+    # Set the frame range for color change
+    pyramid = doc.SearchObject("Pyramid")
+    
+
+    if current_frame % 360 == 0:
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.000, 1.000, 0.0)
+        c4d.EventAdd()
+    elif current_frame % 180 == 0:
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.000, 0.000, 1.0)
+        c4d.EventAdd()
+    elif current_frame % 90 == 0:
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(1.000, 0.000, 0.0)
+        c4d.EventAdd()
+if __name__=='__main__':
+  main()
+  
+  
+import c4d
+from math import sin, cos, radians
+
+def main():
+    current_frame = doc.GetTime().GetFrame(doc.GetFps())
+    pyramid = doc.SearchObject("Pyramid")
+    
+    if pyramid:
+        t = radians(current_frame * 4)
+        j_scale = sin(t)
+        if j_scale <= 0:
+            j_scale *= -1
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(j_scale, (j_scale * -1), 0)
+        c4d.EventAdd()
+        
+if __name__=='__main__':
+  main()
+  
+
+        
+        
+def main():
+    # Get the current frame
+    current_frame = doc.GetTime().GetFrame(doc.GetFps())
+
+    # Set the frame range for color change
+    start_frame = 0
+    middle_frame = 180
+    end_frame = 359
+    pyramid = doc.SearchObject("Cube")
+
+    if current_frame % 90 == 0:
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.062, 0.137, 0.266)
+        c4d.EventAdd()
+    elif current_frame % 60 == 0:
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(0.267, 0.686, 1.0)
+        c4d.EventAdd()
+    elif current_frame % 30 == 0:
+        pyramid[c4d.ID_BASEOBJECT_COLOR] = c4d.Vector(1.000, 0.000, 0.0)
+        c4d.EventAdd()
+        
+if __name__=='__main__':
+  main()

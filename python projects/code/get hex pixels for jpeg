@@ -1,0 +1,23 @@
+from PIL import Image
+
+# Load the image
+image_path = r"C:\Users\mat_m\OneDrive\Pictures\Screenshot 2023-07-19 234214.jpeg"
+img = Image.open(image_path)
+img = img.convert("RGB")
+
+pixels = img.load()
+
+width, height = img.size
+
+pixel_hex_values = []
+
+for y in range(height):
+    for x in range(width):
+        r, g, b = pixels[x, y]
+        pixel_hex = f"#{r:02x}{g:02x}{b:02x}"
+        pixel_hex_values.append(pixel_hex)
+
+print(pixel_hex_values)
+
+# Close the image
+img.close()
