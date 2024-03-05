@@ -15,6 +15,18 @@
 
 #Main function
 def main():
+    what_do = input("""
+          What do you want to do?
+          1) run the main loop
+          2) store the values to the database
+          3) Exit the programme""")
+    
+    if what_do[0] == "1":
+        get_values()
+    elif what_do[0] == "3":
+        raise SystemExit
+
+def get_values():
     """
         Brief overview \n
          Script will ask for a input value then iterate through collatz conjecture and print the resulting value and the step value  \n
@@ -42,6 +54,7 @@ def main():
             print(start, step) # then perform 3n + 1 and prints it and the step value
         elif start == 1: #if start is 1
             print("End", "1", step)
+    main()
 
 #Function for if num is even
 def even(num):
