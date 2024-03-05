@@ -28,16 +28,19 @@ def main():
         Overview: \n
          First gets the original input value as a string then coverts it to a int and stores this as \n
     """
+    step = 0
     start = int(inputValue()) #sets a value = to the return of inputValue as uses it as a start point
-    while start >= 2:
+    while start >= 2: #while start is greater than 2 so we dont have to call it over and over
         if start % 2 == 0: #if statement for now will probably have to make it into a while statement eventually
-            start = print(even(start)) #if even number then / 2 and prints it
+            step += 1
+            start = print(even(start), step) #if even number then / 2 and prints it
         elif start % 2 == 1: #if odd number
-            start = print(odd(start)) # then perform 3n + 1 and prints it
+            step += 1
+            start = print(odd(start), step) # then perform 3n + 1 and prints it
         else: #if not a even or odd number
             print("Error") #prints an error
-     if start == 1:
-        print("End", "1", step)
+     if start == 1: #if start is 1
+        print("End", "1", step) #we are at the end
 
 
 #Function for if num is even
