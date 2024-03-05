@@ -29,10 +29,10 @@ def main():
          First  declares step then gets the original input value as a string then coverts it to a int and stores this as start, \n
          Next enters a while loop to interate through the conjecture and print the value and the step of each step
     """
-    step = 0 #set the step counter to 0
-    start = inputValue() #sets a value = to the return of inputValue as uses it as a start point
-    while start >= 2: #while start is greater than 2 so we dont have to call it over and over
-        if start % 2 == 0: #if statement for now will probably have to make it into a while statement eventually
+    step = 0 
+    start = inputValue()
+    while start >= 2:
+        if start % 2 == 0: 
             step += 1 # add one to step
             start = even(start)
             print(start, step)
@@ -41,12 +41,9 @@ def main():
             start = odd(start)
             print(start, step) # then perform 3n + 1 and prints it and the step value
         elif start == 1: #if start is 1
-            print("End", "1", step) #we are at the end and the step value
-        else: #if not a even or odd number
-            print("Error") #prints an error
-    
-def rando():
-    pass
+            print("End", "1", step) 
+        else:
+            print("Error")
 
 #Function for if num is even
 def even(num):
