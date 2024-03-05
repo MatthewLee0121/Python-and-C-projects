@@ -13,9 +13,11 @@
 
 ######################################################## SCRIPT values ETC #################################################################################
 import sqlite3
-
+import json 
+values = None
 #Main function
 def main():
+    global values
     what_do = input("""
           What do you want to do?
           1) run the main loop
@@ -34,20 +36,6 @@ def main():
         raise SystemExit
 
 def get_values():
-    """
-        Brief overview \n
-         Script will ask for a input value then iterate through collatz conjecture and print the resulting value and the step value  \n
-        -----------------------------------------------------------------------------\n
-        Keyword Arguments: \n
-         \n
-        -----------------------------------------------------------------------------\n
-        Variables: \n
-         start -- First number \n
-        -----------------------------------------------------------------------------\n
-        Overview: \n
-         First  declares step then gets the original input value as a string then coverts it to a int and stores this as start, \n
-         Next enters a while loop to interate through the conjecture and print the value and the step of each step
-    """
     step = 0 
     start = inputValue()
     storage = {}
@@ -92,7 +80,7 @@ def send_to_database(data):
     cursor.execute('''CREATE TABLE IF NOT EXISTS single_column_table (
                    id INTEGER PRIMARY KEY,
                    dictionary TEXT NOT NULL)''')
-    cursor.execute("INSERT INTO single_column_table (dictionary) VALUES (?)", (str(data),))  # Convert data to string before insertion
+    cursor.execute("INSERT INTO single_column_table (dictionary) VALUES (?)",(json.dumps(data),))  # Convert data to string before insertion
 
     connection.commit()
     connection.close()
