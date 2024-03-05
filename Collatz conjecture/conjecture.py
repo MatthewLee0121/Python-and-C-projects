@@ -15,10 +15,13 @@
 
 
 def even(num):
-    pass
+    return num / 2
 
 def odd(num):
-    pass
+    return (3 * num) + 1
 
 def inputValue(start):
     pass
+
+print(odd(3))
+print(even(2))
