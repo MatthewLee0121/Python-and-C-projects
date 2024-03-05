@@ -22,7 +22,7 @@ def main():
           3) Exit the programme""")
     
     if what_do[0] == "1":
-        get_values()
+        print(get_values())
     elif what_do[0] == "3":
         raise SystemExit
 
@@ -52,9 +52,8 @@ def get_values():
             step += 1 #add 1 to step
             start = odd(start)
             print(start, step) # then perform 3n + 1 and prints it and the step value
-        elif start == 1: #if start is 1
-            print("End", "1", step)
-    main()
+        elif power_of_two(start) == True: #if start is 1
+            return(start, step)
 
 #Function for if num is even
 def even(num):
@@ -73,4 +72,5 @@ def inputValue():
 def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
-main()
+while True:
+    main()
