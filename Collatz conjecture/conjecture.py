@@ -32,71 +32,32 @@ def main():
     step = 0 
     start = inputValue()
     while start >= 2:
-        if start % 2 == 0: 
+        if start % 2 == 0 and power_of_two(start) == False:
             step += 1 # add one to step
             start = even(start)
             print(start, step)
-        elif start % 2 == 1: #if odd number
+        elif start % 2 == 1 and power_of_two(start) == False: #if odd number
             step += 1 #add 1 to step
             start = odd(start)
             print(start, step) # then perform 3n + 1 and prints it and the step value
         elif start == 1: #if start is 1
-            print("End", "1", step) 
-        else:
-            print("Error")
+            print("End", "1", step)
 
 #Function for if num is even
 def even(num):
-    """
-        Brief overview \n
-         Function takes our input number and will divide it by two fufilling the F(N) %  2 == 0: n /2 \n
-        -----------------------------------------------------------------------------\n
-        Keyword Arguments: \n
-         num -- input number for whereever we are in the sequence \n
-        -----------------------------------------------------------------------------\n
-        Variables: \n
-         num -- see Keyword arguments \n
-        -----------------------------------------------------------------------------\n
-        Overview: \n
-         Function takes our input number, then returns the value / 2 returns values as int\n
-    """
-    return int(num / 2) #returns a float will have to change
+    return int(num / 2) 
 
 #Function for if num is odd
 def odd(num):
-    """
-        Brief overview \n
-         Function takes our input number and will divide it by two fufilling the F(N) %  2 == 1: 3n + 1 \n
-        -----------------------------------------------------------------------------\n
-        Keyword Arguments: \n
-         num -- input number for whereever we are in the sequence \n
-        -----------------------------------------------------------------------------\n
-        Variables: \n
-         num -- see Keyword arguments \n
-        -----------------------------------------------------------------------------\n
-        Overview: \n
-         Function takes our input number, then returns the value * 3 then + 1 returns value as a float \n
-    """
     return (3 * num) + 1
 
 #Function to get input value
 def inputValue():
-    """
-        Brief overview \n
-         Function takes our input number and will divide it by two fufilling the F(N) %  2 == 1: n /2 \n
-        -----------------------------------------------------------------------------\n
-        Keyword Arguments: \n
-         num -- input number for whereever we are in the sequence \n
-        -----------------------------------------------------------------------------\n
-        Variables: \n
-         num -- see Keyword arguments \n
-        -----------------------------------------------------------------------------\n
-        Overview: \n
-         Function takes our input number, then returns the value / 2 \n
-    """
     num = int(input("Enter a whole number."))
     return num
 
-
+#Fuction to check if power of two
+def power_of_two(num):
+    return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
 main()
