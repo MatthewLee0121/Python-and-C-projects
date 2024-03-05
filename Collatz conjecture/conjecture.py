@@ -13,15 +13,56 @@
 
 ######################################################## SCRIPT values ETC #################################################################################
 
-
+#Function for if num is even
 def even(num):
+    """
+        Brief overview \n
+         Function takes our input number and will divide it by two fufilling the F(N) %  2 == 0: n /2 \n
+        -----------------------------------------------------------------------------\n
+        Keyword Arguments: \n
+         num -- input number for whereever we are in the sequence \n
+        -----------------------------------------------------------------------------\n
+        Variables: \n
+         num -- see Keyword arguments \n
+        -----------------------------------------------------------------------------\n
+        Overview: \n
+         Function takes our input number, then returns the value / 2 returns values as int\n
+    """
     return num / 2
 
+#Function for if num is odd
 def odd(num):
+    """
+        Brief overview \n
+         Function takes our input number and will divide it by two fufilling the F(N) %  2 == 1: 3n + 1 \n
+        -----------------------------------------------------------------------------\n
+        Keyword Arguments: \n
+         num -- input number for whereever we are in the sequence \n
+        -----------------------------------------------------------------------------\n
+        Variables: \n
+         num -- see Keyword arguments \n
+        -----------------------------------------------------------------------------\n
+        Overview: \n
+         Function takes our input number, then returns the value * 3 then + 1 returns value as a float \n
+    """
     return (3 * num) + 1
 
+#Function to get input value
 def inputValue(start):
+    """
+        Brief overview \n
+         Function takes our input number and will divide it by two fufilling the F(N) %  2 == 1: n /2 \n
+        -----------------------------------------------------------------------------\n
+        Keyword Arguments: \n
+         num -- input number for whereever we are in the sequence \n
+        -----------------------------------------------------------------------------\n
+        Variables: \n
+         num -- see Keyword arguments \n
+        -----------------------------------------------------------------------------\n
+        Overview: \n
+         Function takes our input number, then returns the value / 2 \n
+    """
     pass
 
-print(odd(3))
-print(even(2))
+print(odd(3)) #gives 10
+print(even(2)) #prints 1.0 , integer as float?!?!? no no no
