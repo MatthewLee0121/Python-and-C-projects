@@ -30,19 +30,23 @@ def main():
          Next enters a while loop to interate through the conjecture and print the value and the step of each step
     """
     step = 0 #set the step counter to 0
-    start = int(inputValue()) #sets a value = to the return of inputValue as uses it as a start point
+    start = inputValue() #sets a value = to the return of inputValue as uses it as a start point
     while start >= 2: #while start is greater than 2 so we dont have to call it over and over
         if start % 2 == 0: #if statement for now will probably have to make it into a while statement eventually
             step += 1 # add one to step
-            start = print(even(start), step) #if even number then / 2 and prints it and the step value
+            start = even(start)
+            print(start, step)
         elif start % 2 == 1: #if odd number
             step += 1 #add 1 to step
-            start = print(odd(start), step) # then perform 3n + 1 and prints it and the step value
+            start = odd(start)
+            print(start, step) # then perform 3n + 1 and prints it and the step value
         elif start == 1: #if start is 1
             print("End", "1", step) #we are at the end and the step value
         else: #if not a even or odd number
             print("Error") #prints an error
     
+def rando():
+    pass
 
 #Function for if num is even
 def even(num):
@@ -59,7 +63,7 @@ def even(num):
         Overview: \n
          Function takes our input number, then returns the value / 2 returns values as int\n
     """
-    return num / 2 #returns a float will have to change
+    return int(num / 2) #returns a float will have to change
 
 #Function for if num is odd
 def odd(num):
@@ -93,7 +97,7 @@ def inputValue():
         Overview: \n
          Function takes our input number, then returns the value / 2 \n
     """
-    num = input("Enter a whole number.")
+    num = int(input("Enter a whole number."))
     return num
 
 
