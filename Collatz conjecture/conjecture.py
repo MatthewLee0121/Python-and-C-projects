@@ -25,9 +25,10 @@ def main():
     if what_do[0] == "1":
         get_values()
         what_do = " "
+        return what_do
     elif what_do[0] == "2":
         what_do = " "
-        pass
+        return what_do
     elif what_do[0] == "3":
         SystemExit
 
@@ -48,17 +49,22 @@ def get_values():
     """
     step = 0 
     start = inputValue()
+    storage = {}
     while start >= 2:
         if start % 2 == 0 and power_of_two(start) == False:
             step += 1 # add one to step
             start = even(start)
-            print(start, step)
+            storage[step] = start
+            
         elif start % 2 == 1 and power_of_two(start) == False: #if odd number
             step += 1 #add 1 to step
             start = odd(start)
-            print(start, step) # then perform 3n + 1 and prints it and the step value
+            storage[step] = start
+            
         elif power_of_two(start) == True: #if start is 1
-            print(start, step)
+            storage[step] = start
+            print(storage)
+            return(storage)
 
 #Function for if num is even
 def even(num):
@@ -77,5 +83,8 @@ def inputValue():
 def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
+def option_two()
 
 main()
+while main() != 3:
+    main()
