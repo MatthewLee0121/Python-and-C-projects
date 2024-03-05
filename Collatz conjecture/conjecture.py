@@ -20,7 +20,7 @@ def main():
           What do you want to do?
           1) run the main loop
           2) store the values to the database
-          3) Exit the programme""")
+          0) Exit the programme""")
     
     if what_do[0] == "1":
         values = get_values()
@@ -30,8 +30,8 @@ def main():
         send_to_database(values)
         what_do = " "
         return what_do
-    if what_do[0] == "3":
-        SystemExit
+    if what_do[0] == "0":
+        raise SystemExit
 
 def get_values():
     """
@@ -97,6 +97,6 @@ def send_to_database(data):
     connection.commit()
     connection.close()
 
-main()
-while main() != 3:
+
+while True:
     main()
