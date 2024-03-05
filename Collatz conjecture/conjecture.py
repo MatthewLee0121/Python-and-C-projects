@@ -13,6 +13,7 @@
 
 ######################################################## SCRIPT values ETC #################################################################################
 
+
 #Main function
 def main():
     what_do = input("""
@@ -24,7 +25,7 @@ def main():
     if what_do[0] == "1":
         print(get_values())
     elif what_do[0] == "3":
-        raise SystemExit
+        SystemExit
 
 def get_values():
     """
@@ -53,7 +54,7 @@ def get_values():
             start = odd(start)
             print(start, step) # then perform 3n + 1 and prints it and the step value
         elif power_of_two(start) == True: #if start is 1
-            return(start, step)
+            print(start, step)
 
 #Function for if num is even
 def even(num):
@@ -72,5 +73,4 @@ def inputValue():
 def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
-while True:
-    main()
+main()
