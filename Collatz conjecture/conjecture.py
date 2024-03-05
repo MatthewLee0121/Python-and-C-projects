@@ -28,7 +28,7 @@ def even(num):
         Overview: \n
          Function takes our input number, then returns the value / 2 returns values as int\n
     """
-    return num / 2
+    return num / 2 #returns a float will have to change
 
 #Function for if num is odd
 def odd(num):
@@ -48,7 +48,7 @@ def odd(num):
     return (3 * num) + 1
 
 #Function to get input value
-def inputValue(start):
+def inputValue():
     """
         Brief overview \n
          Function takes our input number and will divide it by two fufilling the F(N) %  2 == 1: n /2 \n
@@ -62,7 +62,13 @@ def inputValue(start):
         Overview: \n
          Function takes our input number, then returns the value / 2 \n
     """
-    pass
+    num = input("Enter a whole number.")
+    return num
 
-print(odd(3)) #gives 10
-print(even(2)) #prints 1.0 , integer as float?!?!? no no no
+start = inputValue() #sets a value = to the return of inputValue as uses it as a start point
+if start % 2 == 0: #if statement for now will probably have to make it into a while statement eventually
+    start = even(start) #if even number then / 2
+elif start % 2 == 1: #if odd number
+    start = odd(start) # then perform 3n + 1
+else: #if not a even or odd number
+    return("Error") #prints an error
