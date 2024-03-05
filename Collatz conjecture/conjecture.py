@@ -65,10 +65,13 @@ def inputValue():
     num = input("Enter a whole number.")
     return num
 
-start = int(inputValue()) #sets a value = to the return of inputValue as uses it as a start point
-if start % 2 == 0: #if statement for now will probably have to make it into a while statement eventually
-    start = print(even(start)) #if even number then / 2
-elif start % 2 == 1: #if odd number
-    start = print(odd(start)) # then perform 3n + 1
-else: #if not a even or odd number
-    print("Error") #prints an error
+def main():
+    start = int(inputValue()) #sets a value = to the return of inputValue as uses it as a start point
+    if start % 2 == 0: #if statement for now will probably have to make it into a while statement eventually
+        start = print(even(start)) #if even number then / 2 and prints it
+    elif start % 2 == 1: #if odd number
+        start = print(odd(start)) # then perform 3n + 1 and prints it
+    else: #if not a even or odd number
+        print("Error") #prints an error
+
+main()
