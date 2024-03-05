@@ -26,7 +26,8 @@ def main():
          start -- First number \n
         -----------------------------------------------------------------------------\n
         Overview: \n
-         First gets the original input value as a string then coverts it to a int and stores this as \n
+         First  declares step then gets the original input value as a string then coverts it to a int and stores this as start, \n
+         Next enters a while loop to interate through the conjecture and print the value and the step of each step
     """
     step = 0 #set the step counter to 0
     start = int(inputValue()) #sets a value = to the return of inputValue as uses it as a start point
