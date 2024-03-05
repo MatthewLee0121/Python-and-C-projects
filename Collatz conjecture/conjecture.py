@@ -38,11 +38,11 @@ def main():
         elif start % 2 == 1: #if odd number
             step += 1 #add 1 to step
             start = print(odd(start), step) # then perform 3n + 1 and prints it and the step value
+        elif start == 1: #if start is 1
+            print("End", "1", step) #we are at the end and the step value
         else: #if not a even or odd number
             print("Error") #prints an error
-     if start == 1: #if start is 1
-        print("End", "1", step) #we are at the end and the step value
-
+    
 
 #Function for if num is even
 def even(num):
