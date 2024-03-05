@@ -24,7 +24,10 @@ def main():
     
     if what_do[0] == "1":
         get_values()
-   # elif what_do[2]
+        what_do = " "
+    elif what_do[0] == "2":
+        what_do = " "
+        pass
     elif what_do[0] == "3":
         SystemExit
 
@@ -73,5 +76,6 @@ def inputValue():
 #Fuction to check if power of two
 def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
+
 
 main()
