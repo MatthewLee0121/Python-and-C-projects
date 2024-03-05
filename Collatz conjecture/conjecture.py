@@ -23,13 +23,14 @@ def main():
           3) Exit the programme""")
     
     if what_do[0] == "1":
-        get_values()
+        values = get_values()
         what_do = " "
         return what_do
-    elif what_do[0] == "2":
+    if what_do[0] == "2":
+        send_to_database(values)
         what_do = " "
         return what_do
-    elif what_do[0] == "3":
+    if what_do[0] == "3":
         SystemExit
 
 def get_values():
@@ -50,6 +51,8 @@ def get_values():
     step = 0 
     start = inputValue()
     storage = {}
+    storage[step] = start
+    
     while start >= 2:
         if start % 2 == 0 and power_of_two(start) == False:
             step += 1 # add one to step
@@ -83,7 +86,16 @@ def inputValue():
 def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
-def option_two()
+def send_to_database(data):
+    connection = sqlite3.connect('collatz.db')
+    cursor = connection.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS single_column_table (
+                   id INTEGER PRIMARY KEY,
+                   dictionary TEXT NOT NULL)''')
+    cursor.execute("INSERT INTO single_column_table (dictionary) VALUES (?)", (str(data),))  # Convert data to string before insertion
+
+    connection.commit()
+    connection.close()
 
 main()
 while main() != 3:
