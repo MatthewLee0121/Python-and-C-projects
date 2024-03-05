@@ -12,7 +12,7 @@
 # This is what i aim to prove that as the number of attempts approaches infinity the chance that you will hit a 2^x number approaches 1 exactly.
 
 ######################################################## SCRIPT values ETC #################################################################################
-
+import sqlite3
 
 #Main function
 def main():
@@ -23,7 +23,8 @@ def main():
           3) Exit the programme""")
     
     if what_do[0] == "1":
-        print(get_values())
+        get_values()
+   # elif what_do[2]
     elif what_do[0] == "3":
         SystemExit
 
