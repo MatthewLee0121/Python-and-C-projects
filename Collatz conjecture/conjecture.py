@@ -13,8 +13,11 @@
 
 ######################################################## SCRIPT values ETC #################################################################################
 import sqlite3
-import json 
+import json
+import sys
+import matplotlib.pyplot as plt
 values = None
+plt.ion()
 #Main function
 def main():
     global values
@@ -22,6 +25,10 @@ def main():
           What do you want to do?
           1) run the main loop
           2) store the values to the database
+          3) write the data to file
+          4) This is 3 but for all values run with care
+          5) convert a external file of dictionaries into a graph
+          6)find the highest value of a given key(edit lines 138, 139)
           0) Exit the programme""")
     
     if what_do[0] == "1":
@@ -32,12 +39,31 @@ def main():
         send_to_database(values)
         what_do = " "
         return what_do
+    if what_do[0] == "3":
+        write_to_new_file(values)
+        what_do = " "
+        return what_do
+    if what_do[0] == "4":
+        for x in range(0, sys.maxsize):
+            values = get_values(x)
+            write_to_new_file(values)
+        what_do = " "
+        return what_do
+    if what_do[0] == "5":
+        dictionarys = get_dictionarys()
+        plot_multi_line_graph(dictionarys)
+    if what_do[0] == "6":
+        dictionarys = get_dictionarys6()
     if what_do[0] == "0":
         raise SystemExit
 
-def get_values():
-    step = 0 
-    start = inputValue()
+def get_values(num = None):
+    step = 0
+
+    if num == None: 
+        start = inputValue()
+    else:
+        start = num
     storage = {}
     storage[step] = start
     
@@ -46,11 +72,15 @@ def get_values():
             step += 1 # add one to step
             start = even(start)
             storage[step] = start
+            if step >= 1001:
+                return(storage)
             
         elif start % 2 == 1 and power_of_two(start) == False: #if odd number
             step += 1 #add 1 to step
             start = odd(start)
             storage[step] = start
+            if step >= 1001:
+                return(storage)
             
         elif power_of_two(start) == True: #if start is 1
             storage[step] = start
@@ -74,6 +104,10 @@ def inputValue():
 def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
+def write_to_new_file(data):
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'a') as file:
+        file.write(str(data) + '\n')
+
 def send_to_database(data):
     connection = sqlite3.connect('collatz.db')
     cursor = connection.cursor()
@@ -84,6 +118,53 @@ def send_to_database(data):
 
     connection.commit()
     connection.close()
+
+def get_dictionarys():
+    dicts = []
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'r') as file:
+        for line_num, line in enumerate(file):
+            if line_num in range(200000):
+                try:
+                    d = eval(line.strip())
+                    dicts.append(d)
+                except Exception as e:
+                    print(f"Error parsing line {line_num + 1}: {line.strip()}")
+                    print(f"Error message: {e}")
+    return dicts
+
+def get_dictionarys6():
+    max_value = float('-inf')  # Initialize max_value to negative infinity
+    max_dict = None  # Initialize max_dict to None
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'r') as file:
+        for line_num, line in enumerate(file):
+            if line_num in range(200000):
+                try:
+                    d = eval(line.strip())
+                    if 3 in d and d[3] > max_value:  # Check if the value for key 4 is greater than current max_value
+                        max_value = d[3]
+                        max_dict = d
+                except Exception as e:
+                    print(f"Error parsing line {line_num + 1}: {line.strip()}")
+                    print(f"Error message: {e}")
+    print(max_dict)
+    return max_dict  # Return the dictionary with the highest value for key 4
+
+def plot_multi_line_graph(dicts):
+    plt.figure(figsize=(12, 10))
+    for d in dicts:
+        y = list(d.values())
+        x = list(d.keys())
+        plt.plot(x, y, marker='x', label=None)
+
+    
+    
+    plt.xlabel('Steps')
+    plt.ylabel('value')
+    plt.title('Collatz')
+    plt.legend()
+    plt.grid(True)
+    plt.show
+
 
 
 while True:
