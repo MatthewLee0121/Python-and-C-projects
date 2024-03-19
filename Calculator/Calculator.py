@@ -2,7 +2,7 @@ import tkinter as tk
 import math
 #creating a calculator
 #update the label in the calculator
-#why does the onkeypress not work?!?!?
+
 def update_label(num):
     if num == "\b":
         remove_last()
