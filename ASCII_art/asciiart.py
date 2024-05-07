@@ -228,6 +228,13 @@ if __name__ == '__main__':
 
     
 
+    def play_video(ascii_label, ascii_art_list):
+        i = 0
+        while True:  # Loop indefinitely
+            time.sleep(0.03334)
+            ascii_label.config(text=ascii_art_list[i])
+            ascii_label.update()
+            i = (i + 1) % len(ascii_art_list)  # Loop back to the beginning if end is reached
 
     def jpeg_to_string(ascii_art_list):
         ascii_video_window = tk.Tk()  # creates the window
@@ -250,32 +257,15 @@ if __name__ == '__main__':
         )
         ascii_label.grid(row=0, column=9, pady=5, padx=5)  # Place label in the first row, first column
 
-        def play_video():
-            nonlocal ascii_label
-            i = 0
-            while i < len(ascii_art_list):
-                time.sleep(0.03334)
-                ascii_label.config(text=ascii_art_list[i])
-                ascii_video_window.update()
-                i += 1
-        play_video()
-
-        ascii_video_window.mainloop()
-
-
-
-        # Create the select mp4 button
         play_video_button = tk.Button(
             ascii_video_window,
             text="Play Video",
             font=("Rockabilly", 10),
-            command=play_video,  # Pass the function reference
+            command=lambda: play_video(ascii_label, ascii_art_list),  # Pass the function reference
             width=20,
             height=2
         )
         play_video_button.grid(row=0, column=10, pady=20, padx=10) # Place button in the first row, second column
-
-        
 
         ascii_video_window.mainloop()
 
