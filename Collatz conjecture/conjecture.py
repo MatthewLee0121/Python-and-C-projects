@@ -137,7 +137,7 @@ def get_dictionarys6():
     max_dict = None  # Initialize max_dict to None
     with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'r') as file:
         for line_num, line in enumerate(file):
-            if line_num in range(200000):
+            if line_num in range(10000):
                 try:
                     d = eval(line.strip())
                     if 3 in d and d[3] > max_value:  # Check if the value for key 4 is greater than current max_value

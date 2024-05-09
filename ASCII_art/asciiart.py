@@ -5,6 +5,8 @@ from PIL import Image  ##used to read Jpeg
 import tkinter as tk   #Used for GUI
 from tkinter import filedialog #makes selecting files easier
 import cv2, os, time  #used in the MP4 conversion
+import numpy as np
+
 if __name__ == '__main__':
 
 
@@ -93,7 +95,7 @@ if __name__ == '__main__':
             ascii_window.configure(bg="#f0f0f0") #white cos we in testing
             
             # Get ASCII art from the selected image
-            ascii_art = get_ascii_art(selected_file_path, rows.get(), columns.get())
+            ascii_art = get_ascii_art(selected_file_path, rows.get(), columns.get(), line_detection.get())
             
             # Create a label for displaying the ASCII art
             ascii_label = tk.Label(
@@ -107,8 +109,30 @@ if __name__ == '__main__':
 
             ascii_window.mainloop()
 
+    def edge_detection(image):
+        # Convert the image to grayscale
+        gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+        # Apply Gaussian blur to reduce noise
+        blurred_image = cv2.GaussianBlur(gray_image, (3, 3), 0)
+
+        # Apply Sobel operator for edge detection
+        sobel_x = cv2.Sobel(blurred_image, cv2.CV_64F, 1, 0, ksize=3)
+        sobel_y = cv2.Sobel(blurred_image, cv2.CV_64F, 0, 1, ksize=3)
+
+        # Compute the gradient magnitude
+        gradient_magnitude = np.sqrt(sobel_x ** 2 + sobel_y ** 2)
+
+        # Normalize the gradient magnitude to 0-255
+        gradient_magnitude *= 255.0 / gradient_magnitude.max()
+
+        # Convert the gradient magnitude to uint8
+        gradient_magnitude = np.uint8(gradient_magnitude)
+
+        return gradient_magnitude
+
     # Function to generate art
-    def get_ascii_art(image_path, rows, columns):
+    def get_ascii_art(image_path, rows, columns, line_detection):
         """Reads a Jpeg and converts it to ASCII art \n
         ----------------------------------------------------------------------------- \n
         Keyword Arguments: \n
@@ -135,8 +159,16 @@ if __name__ == '__main__':
         Next for loop takes the value for brightness and maps each value to a index value inbetween the Len() of how every many characters we are using \n
         Finally the loop append the ASCII character to the ascii_art variable and returns the string after the loop.
         """
+        if line_detection == True:
+            image = cv2.imread(image_path)
+            img = edge_detection(image)
+            img = Image.fromarray(img)
+
+        else:
+            img = Image.open(image_path)
+
         # Load the image
-        img = Image.open(image_path)
+        #img = Image.open(image_path)
 
         # Convert the image to grayscale mode
         img = img.convert("L")
@@ -211,7 +243,7 @@ if __name__ == '__main__':
                 cv2.imwrite(jpeg_filename, frame) #sets a new jpeg file in the dump folder for the frame
 
                 # Get ASCII art for the saved frame and append it to the list
-                ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get())
+                ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
                 ascii_art_list.append(ascii_art)
 
                 # Delete the file after obtaining ASCII art
@@ -338,6 +370,7 @@ if __name__ == '__main__':
         font_size_var = tk.IntVar(value=1)
         rows = tk.IntVar(value=1)
         columns = tk.IntVar(value=1)
+        line_detection = tk.IntVar()
 
         # Create font size scale
         font_size_scale = tk.Scale(
@@ -372,11 +405,20 @@ if __name__ == '__main__':
         )
         columns_scale.pack(pady=10)
 
+        LineDetection_box = tk.Checkbutton(
+            main_window,
+            text= 'Line Detection?(untick for mp4)',
+            variable= line_detection,
+            onvalue= True,
+            offvalue= False,
+        )
+        LineDetection_box.pack(pady=10)
+
         # Return the main window
-        return main_window, font_size_var, columns, rows
+        return main_window, font_size_var, columns, rows, line_detection
 
     #creates the main window
-    main_window, font_size_var, columns, rows = create_main(open_file, mp4_to_jpeg, get_image_path, get_video_path)
+    main_window, font_size_var, columns, rows, line_detection = create_main(open_file, mp4_to_jpeg, get_image_path, get_video_path)
 
     # Start the Tkinter event loop
     main_window.mainloop()
