@@ -12,12 +12,16 @@
 # This is what i aim to prove that as the number of attempts approaches infinity the chance that you will hit a 2^x number approaches 1 exactly.
 
 ######################################################## SCRIPT values ETC #################################################################################
+
 import sqlite3
 import json
 import sys
 import matplotlib.pyplot as plt
+
 values = None
+
 plt.ion()
+
 #Main function
 def main():
     global values
@@ -133,21 +137,24 @@ def get_dictionarys():
     return dicts
 
 def get_dictionarys6():
-    max_value = float('-inf')  # Initialize max_value to negative infinity
-    max_dict = None  # Initialize max_dict to None
+    highest_values = {}  # Initialize dictionary to store the highest values for each key
     with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(10000):
                 try:
                     d = eval(line.strip())
-                    if 3 in d and d[3] > max_value:  # Check if the value for key 4 is greater than current max_value
-                        max_value = d[3]
-                        max_dict = d
+                    for key, value in d.items():
+                        if key in highest_values:
+                            # Update the highest value for the key if the current value is higher
+                            if value > highest_values[key]:
+                                highest_values[key] = value
+                        else:
+                            highest_values[key] = value  # Add key-value pair if it doesn't exist yet
                 except Exception as e:
                     print(f"Error parsing line {line_num + 1}: {line.strip()}")
                     print(f"Error message: {e}")
-    print(max_dict)
-    return max_dict  # Return the dictionary with the highest value for key 4
+    print(highest_values)
+    return highest_values
 
 def plot_multi_line_graph(dicts):
     plt.figure(figsize=(12, 10))
