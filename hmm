@@ -1,0 +1,47 @@
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+import csv
+
+# Initialize lists to store data
+ages = []
+course_difficulties = []
+written_scores = []
+
+# Read CSV file and extract data
+with open(r'C:\Users\mat_m\Downloads\GCSE Results Data.csv', newline='') as data_file:
+    data_reader = csv.reader(data_file)
+    next(data_reader)  # Skip header row
+    for row in data_reader:
+        # Ensure the columns containing numerical data are not empty
+        if row[2].isdigit() and row[4].isdigit() and row[5]:
+            ages.append(int(row[2]))
+            course_difficulties.append(int(row[4]))
+            written_scores.append(float(row[5]))
+
+# Convert lists to numpy arrays
+age = np.array(ages)
+course_difficulty = np.array(course_difficulties)
+written_score = np.array(written_scores)
+
+# Create a meshgrid for age and course difficulty
+age_grid, course_difficulty_grid = np.meshgrid(np.linspace(age.min(), age.max(), 100),
+                                               np.linspace(course_difficulty.min(), course_difficulty.max(), 100))
+
+# Interpolate written scores for the meshgrid
+from scipy.interpolate import griddata
+score_grid = griddata((age, course_difficulty), written_score, (age_grid, course_difficulty_grid), method='linear')
+
+# Create the 3D surface plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+surf = ax.plot_surface(age_grid, course_difficulty_grid, score_grid, cmap='viridis')
+
+# Add labels and customize plot
+ax.set_xlabel('Age')
+ax.set_ylabel('Course Difficulty')
+ax.set_zlabel('Written Score')
+plt.title('3D Surface Plot of Written Scores')
+plt.colorbar(surf)
+
+plt.show()

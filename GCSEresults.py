@@ -12,3 +12,8 @@ with open(r'C:\Users\mat_m\Downloads\GCSE Results Data.csv') as GCSE_result_unre
 
     print(results68137)
 
+    first_line_file = open(r'C:\Users\mat_m\Downloads\GCSE Results Data.csv', 'r')
+    first_line = first_line_file.readline()
+
+    print(first_line)
+

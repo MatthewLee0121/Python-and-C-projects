@@ -1,0 +1,34 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+
+# Load data from CSV file
+data_path = r'C:\Users\mat_m\Downloads\GCSE Results Data.csv'
+
+# Read the CSV file into a DataFrame
+df = pd.read_csv(data_path)
+
+# Check the column names in the DataFrame
+print(df.columns)
+
+# Group data by school ID
+school_data = df.groupby('school ID')[['written Score', 'course Score']].apply(lambda x: x.values.tolist()).to_dict()
+
+# Plotting
+plt.figure(figsize=(10, 6))
+
+for school_id, data in school_data.items():
+    course_work = [d[1] for d in data]
+    written_work = [d[0] for d in data]
+    num_students = len(course_work)
+    bubble_size = num_students * 5  # Adjust the multiplier as needed for bubble size
+
+    plt.scatter(course_work, written_work, s=bubble_size, alpha=0.5, label=f'School {school_id}')
+
+plt.xlabel('Course Work')
+plt.ylabel('Written Work')
+plt.title('Bubble Chart: Course Work vs Written Work')
+plt.legend()
+plt.grid(True)
+plt.tight_layout()
+plt.show()
