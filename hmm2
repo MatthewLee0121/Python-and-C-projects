@@ -1,34 +1,32 @@
-import numpy as np
-import matplotlib.pyplot as plt
 import pandas as pd
-
-# Load data from CSV file
-data_path = r'C:\Users\mat_m\Downloads\GCSE Results Data.csv'
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
 
 # Read the CSV file into a DataFrame
-df = pd.read_csv(data_path)
+df = pd.read_csv(r'C:\Users\mat_m\Downloads\world_pop (1).csv')
 
-# Check the column names in the DataFrame
-print(df.columns)
+# Extract relevant columns
+years = [int(col.split('_')[1]) for col in df.columns if col.startswith('year_')]
+countries = df['country'].unique()
 
-# Group data by school ID
-school_data = df.groupby('school ID')[['written Score', 'course Score']].apply(lambda x: x.values.tolist()).to_dict()
+# Assign numerical codes to countries
+country_codes = range(len(countries))
+country_code_mapping = dict(zip(countries, country_codes))
 
-# Plotting
-plt.figure(figsize=(10, 6))
+# Create a 3D line graph
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
 
-for school_id, data in school_data.items():
-    course_work = [d[1] for d in data]
-    written_work = [d[0] for d in data]
-    num_students = len(course_work)
-    bubble_size = num_students * 5  # Adjust the multiplier as needed for bubble size
+# Plot population growth for each country
+for country in countries:
+    country_population = df[df['country'] == country][[col for col in df.columns if col.startswith('year_')]].iloc[0].values
+    country_code = country_code_mapping[country]
+    ax.plot(years, [country_code]*len(years), country_population, label=country)
 
-    plt.scatter(course_work, written_work, s=bubble_size, alpha=0.5, label=f'School {school_id}')
+# Set labels and title
+ax.set_xlabel('Year')
+ax.set_ylabel('Country')
+ax.set_zlabel('Population')
+ax.set_title('Population Growth Over Years by Country')
 
-plt.xlabel('Course Work')
-plt.ylabel('Written Work')
-plt.title('Bubble Chart: Course Work vs Written Work')
-plt.legend()
-plt.grid(True)
-plt.tight_layout()
 plt.show()
