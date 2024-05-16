@@ -110,6 +110,9 @@ if __name__ == '__main__':
             ascii_window.mainloop()
 
     def edge_detection(image):
+        """
+        well welll welll
+        """
         # Convert the image to grayscale
         gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
