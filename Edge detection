@@ -25,7 +25,7 @@ def edge_detection(image):
 
 # Read the input image
 image = cv2.imread(r'C:\Users\mat_m\OneDrive\Pictures\samurai.jpg')
-
+    
 # Apply edge detection
 edges = edge_detection(image)
 

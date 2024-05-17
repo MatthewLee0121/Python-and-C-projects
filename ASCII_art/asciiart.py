@@ -110,6 +110,7 @@ if __name__ == '__main__':
             ascii_window.mainloop()
 
     def edge_detection(image):
+        
         """
         well welll welll
         """
