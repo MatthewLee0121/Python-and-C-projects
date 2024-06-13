@@ -70,7 +70,6 @@ def main():
 
     if obj:
         # Specify the rotation angle in degrees (e.g., 45 degrees in each axis)
-        
         rotation_angle = c4d.Vector(j_scale / 16, j_scale / 16, j_scale / 16)
         print(rotation_angle)
         # Rotate the object
