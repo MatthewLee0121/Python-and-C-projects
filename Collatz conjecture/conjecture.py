@@ -93,11 +93,11 @@ def get_values(num = None):
 
 #Function for if num is even
 def even(num):
-    return int(num / 2) 
+    return int(num / 6) 
 
 #Function for if num is odd
 def odd(num):
-    return (3 * num) + 1
+    return (9 * num) + 3
 
 #Function to get input value
 def inputValue():
