@@ -125,7 +125,7 @@ def send_to_database(data):
 
 def get_dictionarys():
     dicts = []
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'r') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values.txt', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(200000):
                 try:
@@ -138,7 +138,7 @@ def get_dictionarys():
 
 def get_dictionarys6():
     highest_values = {}  # Initialize dictionary to store the highest values for each key
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'r') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values.txt', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(10000):
                 try:
