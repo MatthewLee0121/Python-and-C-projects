@@ -11,26 +11,26 @@ CODE SEGMENT USE16
 
 BEG:
     MOV AX, DATA
-    MOV DS,AX
+    MOV DS, AX
 
     MOV AL, NUM1
     ADD AL, NUM2
+    ADD AL, '0'
     MOV RESULT, AL
 
     MOV AH, 9
     LEA DX, OUTPUT
     INT 21H
 
-    ADD AL, RESULT
-    ADD AL, '0'
+    MOV DL, RESULT
     MOV AH, 2
     INT 21H
 
     MOV AH, 9
     LEA DX, NEXTLINE
     INT 21H
- 
-    MOV AH,4CH
+
+    MOV AH, 4CH
     INT 21H
 CODE ENDS
 END BEG
