@@ -1,8 +1,8 @@
 DATA SEGMENT USE16
 BLANKLINE DB 13, 10, '$'
 MESG DB'Hello world!', '$'
-MESG2 DB'sUUUUUUUH DUDE', '$'
-MESG3 DB'sUUUUUUUH DUDE', '$'
+MESG2 DB'should be line 2', '$'
+MESG3 DB'should be line 3', '$'
 DATA ENDS
 
 CODE SEGMENT USE16
