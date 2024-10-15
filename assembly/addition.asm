@@ -1,7 +1,36 @@
 DATA SEGMENT USE16
-    NEXTLINE DB 13, 10, '$'
-    NUM1 5
-    NUM2 6
-    RESULT DB 0
-    OUTPUT DB 'result of num1 + num2 = $'
+NEXTLINE DB 13, 10, '$'
+NUM1 DB 5
+NUM2 DB 2
+RESULT DB 0
+OUTPUT DB 'result of num1 + num2 = $'
 DATA ENDS
+
+CODE SEGMENT USE16
+    ASSUME CS:CODE,DS:DATA
+
+BEG:
+    MOV AX, DATA
+    MOV DS,AX
+
+    MOV AL, NUM1
+    ADD AL, NUM2
+    MOV RESULT, AL
+
+    MOV AH, 9
+    LEA DX, OUTPUT
+    INT 21H
+
+    ADD AL, RESULT
+    ADD AL, '0'
+    MOV AH, 2
+    INT 21H
+
+    MOV AH, 9
+    LEA DX, OFFSET NEXTLINE
+    INT 21H
+ 
+    MOV AH,4CH
+    INT 21H
+CODE ENDS
+END BEG
