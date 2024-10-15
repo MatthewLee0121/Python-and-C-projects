@@ -27,7 +27,7 @@ BEG:
     INT 21H
 
     MOV AH, 9
-    LEA DX, OFFSET NEXTLINE
+    LEA DX, NEXTLINE
     INT 21H
  
     MOV AH,4CH
