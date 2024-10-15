@@ -1,8 +1,8 @@
 DATA SEGMENT USE16
-BLANKLINE DB 13, 10, '$' ;ascii chara 13 and 10 carriage return and line feed respectively
-MESG DB'Hello world!', '$'
-MESG2 DB'should be line 2', '$'
-MESG3 DB'should be line 3', '$'
+    BLANKLINE DB 13, 10, '$' ;ascii chara 13 and 10 carriage return and line feed respectively
+    MESG DB'Hello world!', '$'
+    MESG2 DB'should be line 2', '$'
+    MESG3 DB'should be line 3', '$'
 DATA ENDS
 
 CODE SEGMENT USE16
