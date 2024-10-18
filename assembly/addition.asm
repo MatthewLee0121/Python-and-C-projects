@@ -37,8 +37,6 @@ BEG: ;start to beg this pc to work
     SUB AL, '0'
     ADD AL, NUM3
     ADD AL, '0'
-    MOV RESULT, DX
-    SUB AL, DX
     MOV RESULT, AL
 
     MOV AH, 9
