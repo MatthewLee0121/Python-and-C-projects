@@ -1,7 +1,7 @@
 DATA SEGMENT USE16
 NEXTLINE DB 13, 10, '$'
 NUM1 DB 5
-NUM2 DB 1
+NUM2 DB 6 ;changed to 6 so answer is 11
 RESULT DB 0
 OUTPUT DB 'result of num1 + num2 = $'
 DATA ENDS
@@ -19,7 +19,7 @@ BEG: ;start to beg this pc to work
     MOV RESULT, AL ;moves al value onto the end of result value
 
     MOV AH, 9
-    LEA DX, OUTPUT1
+    LEA DX, OUTPUT
     INT 21H
 
     MOV DL, RESULT
@@ -29,25 +29,6 @@ BEG: ;start to beg this pc to work
     MOV AH, 9
     LEA DX, NEXTLINE
     INT 21H
-
-    ;trying to incorporate a 3rd number into the addition
-    SUB AL, '0'
-    ADD AL, NUM3
-    ADD AL, '0'
-    MOV RESULT, AL
-
-    MOV AH, 9
-    LEA DX, OUTPUT2
-    INT 21H
-
-    MOV DL, RESULT
-    MOV AH, 2
-    INT 21H
-
-    MOV AH, 9
-    LEA DX, NEXTLINE
-    INT 21H
-    
 
     MOV AH, 4CH
     INT 21H
