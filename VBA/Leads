@@ -1,0 +1,65 @@
+Private Sub cmbFormatLeads_Click()
+    ' declaring variables
+    Dim wsLeads As Worksheet
+    Dim wsDest As Worksheet
+    Dim lastRow, i, destRow As Long
+    Dim mostRecentDate, currentDate As Date
+    
+    'setting worksheet reference
+    Set wsLeads = ThisWorkbook.Sheets("Leads")
+    
+    'check if Reformatted leads sheet exists, if not create it
+    On Error Resume Next
+    Set wsDest = ThisWorkbook.Sheets("Reformatted leads")
+    On Error GoTo 0
+    If wsDest Is Nothing Then
+        Set wsDest = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
+        wsDest.Name = "Reformatted leads"
+    End If
+    
+    'clear the Reformatted leads sheet
+    wsDest.Cells.Clear
+    
+    'setting headers in Reformatted leads
+    With wsDest
+        .Cells(1, 1).Value = wsLeads.Cells(1, 1).Value
+        .Cells(1, 2).Value = wsLeads.Cells(1, 2).Value
+        .Cells(1, 3).Value = wsLeads.Cells(1, 3).Value
+    End With
+    
+    ' finding last row with data
+    lastRow = wsLeads.Cells(wsLeads.Rows.Count, "A").End(xlUp).Row
+    destRow = 2 ' start on row 2 (headers are row 1)
+    
+    ' Loop through Leads
+    For i = 2 To lastRow
+        mostRecentDate = 0 ' Reset the most recent date
+        
+        ' Comparing dates
+        For j = 3 To 7
+            currentDate = wsLeads.Cells(i, j).Value
+            If currentDate > mostRecentDate Then
+                mostRecentDate = currentDate
+            End If
+        Next j
+        
+        ' Copying columns A and B to the 'Reformatted leads' sheet
+        wsDest.Cells(destRow, 1).Value = wsLeads.Cells(i, 1).Value
+        wsDest.Cells(destRow, 2).Value = wsLeads.Cells(i, 2).Value
+        wsDest.Cells(destRow, 3).Value = mostRecentDate
+        
+        destRow = destRow + 1
+    Next i
+    
+    With wsDest.Sort
+        .SortFields.Clear
+        .SortFields.Add Key:=wsDest.Range("C2:C" & destRow - 1), _
+                        SortOn:=xlSortOnValues, Order:=xlAscending, DataOption:=xlSortNormal
+        .SetRange wsDest.Range("A1:C" & destRow - 1)
+        .Header = xlYes
+        .Apply
+    End With
+    
+    MsgBox "Leads have been reformatted and copied to the 'Reformatted leads' sheet.", vbInformation
+
+End Sub

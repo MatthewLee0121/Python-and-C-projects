@@ -1,0 +1,303 @@
+'ACR (Automated Claims Report UserForm)
+'Designed by Matty Lee (mattylee0121@gmail.com)
+'List box for status needs to contain: Notification Only, Outstanding, Repudiated, Settled, Withdrawn
+'Need to remember to code in a scan for the highest claim value
+'Settled value (P) will be added to reserve amount (N) to create total claim amount
+
+Private Sub UserForm_Initialize() 'me references the UserForm
+
+    ' Setting the status box lists
+    With Me.cmbStatus
+        .AddItem "Notification Only"
+        .AddItem "Outstanding"
+        .AddItem "Repudiated"
+        .AddItem "Settled"
+        .AddItem "Withdrawn"
+    End With
+    
+    With Me.cmbstatus2
+        .AddItem "Notification Only"
+        .AddItem "Outstanding"
+        .AddItem "Repudiated"
+        .AddItem "Settled"
+        .AddItem "Withdrawn"
+    End With
+    
+    ' Setting up the initial form
+    Me.chkstatus.Value = False
+    Me.cmbstatus2.visible = False
+    
+    Me.txtLowerBound.Text = 0
+    Me.txtUpperBound.Text = HighestclaimValue() 'runs the highestclaim value run and sets the return as the max value
+    
+    'claim range
+    Me.chkClaimRange.Value = False
+    ToggleBoundControls False
+    
+    'date range
+    Me.chkDateRange.Value = False
+    ToggleDateRangeControls False
+    
+    'last x months
+    Me.chkLastXMonths.Value = False
+    ToggleLastXMonthsControls False
+    
+    'extra columns
+    Me.chkExtraColumn.Value = True
+    
+End Sub
+
+Private Sub cmbGenerate_Click()
+    
+    'declaring variables
+    Dim selectedStatus, selectedStatus2 As String
+    Dim wsSource, wsDest As Worksheet
+    Dim lastRow, i, destRow As Long
+    Dim lowerBound, upperBound, totalClaim As Long
+    Dim startDate, endDate As Date
+    Dim lastXMonths As Long
+
+    ' Checking we have an input
+    If Me.cmbStatus.Value = "" Then
+        MsgBox "Please select a status.", vbExclamation
+        Exit Sub
+    End If
+    
+    ' Assigns the first status if valid
+    selectedStatus = Me.cmbStatus.Value
+    
+    ' A quick if statement to check if we need a second value
+    If Me.chkstatus.Value = True Then
+        If Me.cmbstatus2.Value = "" Then
+            MsgBox "Please select the second status.", vbExclamation
+            Exit Sub
+        End If
+        
+        ' Setting the second status if combo box is checked, this must be within the If statement
+        selectedStatus2 = Me.cmbstatus2.Value
+    End If
+        
+    'if the second status is the same as the first then ask the user to uncheck the combo box
+    If selectedStatus = selectedStatus2 Then
+        MsgBox "Please uncheck the second status box.", vbExclamation
+        Exit Sub
+    End If
+    
+    ' If the claim boundary checkbox is selected then check that input is numeric
+    If IsNumeric(Me.txtLowerBound.Text) And IsNumeric(Me.txtUpperBound.Text) Then
+        lowerBound = CLng(Me.txtLowerBound.Text)
+        upperBound = CLng(Me.txtUpperBound.Text)
+        
+        ' Making sure our lower bound is not higher than our upper bound
+        If lowerBound > upperBound Then
+            MsgBox "The lower bound is higher than the upper bound. Please reselect.", vbExclamation
+            Exit Sub
+        End If
+    Else
+        MsgBox "Please enter valid numbers for bounds.", vbExclamation
+        Exit Sub
+    End If
+
+    ' For testing and development, display the selected status and bounds
+    With Worksheets("Control Sheet")
+        .Range("B3").Value = selectedStatus
+        .Range("C3").Value = selectedStatus2
+        .Range("B4").Value = lowerBound
+        .Range("B5").Value = upperBound
+    End With
+
+    ' Set up New report or create if it doesn't exist
+    Set wsSource = ThisWorkbook.Sheets("All Claims")
+    On Error Resume Next
+    Set wsDest = ThisWorkbook.Sheets("New Report")
+    On Error GoTo 0
+    If wsDest Is Nothing Then ' If it doesn't exist create it
+        Set wsDest = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
+        wsDest.Name = "New Report"
+    End If
+    
+    ' Clear the worksheet
+    wsDest.Cells.Clear
+    ' Set the headers
+    wsSource.Rows(1).Copy Destination:=wsDest.Rows(1)
+    ' Finding the last row of data
+    lastRow = wsSource.Cells(wsSource.Rows.Count, "K").End(xlUp).Row
+    destRow = 2
+
+    ' Set up date filtering if the checkboxes are checked
+    If Me.chkDateRange.Value Then
+        If IsDate(Me.txtStartDate.Value) And IsDate(Me.txtEndDate.Value) Then
+            startDate = CDate(Me.txtStartDate.Value)
+            endDate = CDate(Me.txtEndDate.Value)
+        Else
+            MsgBox "Please enter valid dates for the date range.", vbExclamation
+            Exit Sub
+        End If
+    ElseIf Me.chkLastXMonths.Value Then
+        If IsNumeric(Me.txtLastXMonths.Value) Then
+            lastXMonths = CLng(Me.txtLastXMonths.Value)
+            endDate = Date
+            startDate = DateAdd("m", -lastXMonths, endDate)
+        Else
+            MsgBox "Please enter a valid number for the last X months.", vbExclamation
+            Exit Sub
+        End If
+    End If
+
+    ' Looping through data based on selection of UserForm
+    For i = 2 To lastRow
+        If wsSource.Cells(i, "K").Value = selectedStatus Or (Me.chkstatus.Value = True And wsSource.Cells(i, "K").Value = selectedStatus2) Then
+            If Me.chkClaimRange.Value = True Then
+                totalClaim = wsSource.Cells(i, "N").Value + wsSource.Cells(i, "P").Value
+                If totalClaim >= lowerBound And totalClaim <= upperBound Then
+                    ' Check if we need to filter by date range
+                    If Me.chkDateRange.Value Or Me.chkLastXMonths.Value Then
+                        If wsSource.Cells(i, "L").Value >= startDate And wsSource.Cells(i, "L").Value <= endDate Then
+                            wsSource.Rows(i).Copy Destination:=wsDest.Rows(destRow)
+                            destRow = destRow + 1
+                        End If
+                    Else
+                        wsSource.Rows(i).Copy Destination:=wsDest.Rows(destRow)
+                        destRow = destRow + 1
+                    End If
+                End If
+            Else
+                ' Check date range if applicable
+                If Me.chkDateRange.Value Or Me.chkLastXMonths.Value Then
+                    If wsSource.Cells(i, "L").Value >= startDate And wsSource.Cells(i, "L").Value <= endDate Then
+                        wsSource.Rows(i).Copy Destination:=wsDest.Rows(destRow)
+                        destRow = destRow + 1
+                    End If
+                Else
+                    wsSource.Rows(i).Copy Destination:=wsDest.Rows(destRow)
+                    destRow = destRow + 1
+                End If
+            End If
+        End If
+    Next i
+     
+    If Me.chkExtraColumn = True Then
+        With wsDest
+        wsDest.Columns("R:CH").EntireColumn.Hidden = True
+        End With
+    End If
+
+    
+    
+    MsgBox "Rows with the selected parameters have been copied to the 'New Report' sheet.", vbInformation
+
+    Me.Hide
+    
+End Sub
+
+Private Sub chkClaimRange_Click()
+
+    ' Checking if claim range is active
+    ToggleBoundControls Me.chkClaimRange.Value
+    
+End Sub
+
+Private Sub ToggleBoundControls(visible As Boolean)
+    
+    ' Hiding the claim range if not needed
+    Me.txtLowerBound.visible = visible
+    Me.txtUpperBound.visible = visible
+    Me.lblLowerClaimBound.visible = visible
+    Me.lblUpperClaimBound.visible = visible
+    
+End Sub
+
+
+Private Sub ToggleLastXMonthsControls(visible As Boolean)
+    
+    ' Hiding the last x months if not needed
+    Me.txtLastXMonths.visible = visible
+    Me.lblLast.visible = visible
+    Me.lblMonths.visible = visible
+    
+End Sub
+
+Private Sub chkLastXMonths_Click()
+
+    ' Click to toggle between range or last X
+    If Me.chkLastXMonths.Value = True Then
+        Me.chkDateRange.Value = False
+        ToggleDateRangeControls False
+    End If
+    
+    ToggleLastXMonthsControls Me.chkLastXMonths.Value
+    
+End Sub
+
+Private Sub chkDateRange_Click()
+
+    ' Click to toggle between range or last X
+    If Me.chkDateRange.Value = True Then
+        Me.chkLastXMonths.Value = False
+        ToggleLastXMonthsControls False
+    End If
+    
+    ToggleDateRangeControls Me.chkDateRange.Value
+    
+End Sub
+
+Private Sub ToggleDateRangeControls(visible As Boolean)
+    
+    ' Hiding the date range if not needed
+    Me.txtStartDate.visible = visible
+    Me.txtEndDate.visible = visible
+    Me.lblStartDate.visible = visible
+    Me.lblEndDate.visible = visible
+    
+End Sub
+
+Private Sub cmbStatus_Change()
+    
+    ' If Outstanding is selected then automatically show the claim range
+    If Me.cmbStatus.Value = "Outstanding" Then
+        Me.chkClaimRange.Value = True
+    Else
+        Me.chkClaimRange.Value = False
+    End If
+    ToggleBoundControls Me.chkClaimRange.Value
+    
+    
+End Sub
+
+Private Sub chkstatus_Click()
+    
+    ' Sets the second status option to visible or not
+    Me.cmbstatus2.visible = Me.chkstatus.Value
+    
+End Sub
+
+Private Function HighestclaimValue() As Long
+
+    'generating a maximum claim value from the all claims sheet
+    Dim wsSource As Worksheet, wsControl As Worksheet
+    Dim lastRow As Long, maxClaim As Long, i As Long, totalClaim As Long
+
+    ' Set the source and control sheets
+    Set wsSource = ThisWorkbook.Sheets("All Claims")
+    Set wsControl = ThisWorkbook.Sheets("Control Sheet")
+
+    'getting the last row of data
+    lastRow = wsSource.Cells(wsSource.Rows.Count, "N").End(xlUp).Row
+
+    'Initialize maxClaim at 0
+    maxClaim = 0
+
+    'finding the max claim value
+    For i = 2 To lastRow
+        totalClaim = wsSource.Cells(i, "N").Value + wsSource.Cells(i, "P").Value
+        If totalClaim > maxClaim Then
+            maxClaim = totalClaim
+        End If
+    Next i
+
+    ' displays max claim in the control sheet
+    wsControl.Range("B6").Value = maxClaim ' Change the cell reference as needed
+    
+    HighestclaimValue = maxClaim
+    'MsgBox "The highest claim value is £" & maxClaim, vbInformation
+End Function

@@ -1,0 +1,163 @@
+'ACR(automated claims report Userform)
+'Designed by Matty lee (mattylee0121@gmail.com)
+'list box for status needs to contain: Notification only, Outstanding,Repudiated,Settled,Withdrawn
+'need to remember to code in a scan for highest claim value
+'settled value (p) will be added to reserve amount(N) to create total claim amount
+
+
+Private Sub UserForm_Initialize()
+    
+    With Me.cmbStatus 'set status combo box population
+        .AddItem "Notification Only"
+        .AddItem "Outstanding"
+        .AddItem "Repudiated"
+        .AddItem "Settled"
+        .AddItem "Withdrawn"
+    End With
+    
+    With Me.cmbstatus2 'set status2 combo box population
+        .AddItem "Notification Only"
+        .AddItem "Outstanding"
+        .AddItem "Repudiated"
+        .AddItem "Settled"
+        .AddItem "Withdrawn"
+    End With
+    
+    'sets second status box and combo box to False and not visible when loading
+    Me.chkstatus = False
+    Me.cmbstatus2.visible = False
+    
+    'set textbox initial Values
+    Me.txtLowerBound.Text = 0
+    Me.txtUpperBound.Text = 10000 'set this to 10000 for now will code in a scan to find the highest value claim
+    
+    Me.chkClaimRange.Value = False ' Hide all the claim bounds initially and set the checkbox to False
+    ToggleBoundControls False
+    
+End Sub
+
+Private Sub cmbGenerate_Click() 'me references the ACR userform
+    
+    Dim selectedStatus, selectedStatus2 As String 'declaring variables
+    Dim wsSource, wsDest As Worksheet
+    Dim lastRow, i, destRow, lowerBound, upperBound, totalClaim As Long
+
+    If Me.cmbStatus.Value = "" Then 'if status value is empty
+        MsgBox "Please select a status.", vbExclamation 'display a message box asking to select a status
+        Exit Sub
+    End If
+    
+    selectedStatus = Me.cmbStatus.Value 'sets selectedStatus variable as status box selection
+    selectedStatus2 = Me.cmbstatus2.Value 'sets selectedStatus variable as status box selection
+    
+    If IsNumeric(Me.txtLowerBound.Text) And IsNumeric(Me.txtUpperBound.Text) Then
+        lowerBound = CLng(Me.txtLowerBound.Text)
+        upperBound = CLng(Me.txtUpperBound.Text)
+
+        If lowerBound <= upperBound Then 'making sure lower is less than upper
+            'MsgBox "Lower Bound: " & lowerBound & vbCrLf & "Upper Bound: " & upperBound, vbInformation 'test msgbox
+            
+        Else
+            MsgBox "The lower bound is higher than the upper bound please reselect", vbExclamation
+        End If
+    Else
+        MsgBox "Please enter valid a valid number (no characters or special symbols)", vbExclamation
+    End If
+    
+    
+    
+    Worksheets("Control Sheet").Range("B3").Value = selectedStatus ' for testing and development this will display the selected status in cell B3
+    Worksheets("Control Sheet").Range("B4").Value = lowerBound ' for testing and development this will display the selected status in cell B4
+    Worksheets("Control Sheet").Range("B5").Value = upperBound ' for testing and development this will display the selected status in cell B5
+    
+    
+    
+    Set wsSource = ThisWorkbook.Sheets("All Claims") 'sets the source sheet as All claims since this is where all our data is
+    
+    On Error Resume Next
+    Set wsDest = ThisWorkbook.Sheets("New Report") 'sets the desination sheet of the report to New Report
+    If wsDest Is Nothing Then 'if we dont have a new report create one
+        Set wsDest = ThisWorkbook.Sheets.Add(After:=ThisWorkbook.Sheets(ThisWorkbook.Sheets.Count))
+        wsDest.Name = "New Report"
+    Else
+        wsDest.Cells.Clear ' Clear data in new report
+    End If
+    On Error GoTo 0
+    
+    
+    wsSource.Rows(1).Copy Destination:=wsDest.Rows(1) ' Copy headers
+    
+    
+    lastRow = wsSource.Cells(wsSource.Rows.Count, "K").End(xlUp).Row 'Gets data row range
+    
+    destRow = 2 'since row 1 is the header row our data starts on row 2
+    
+    If Me.chkClaimRange = False Then
+        For i = 2 To lastRow ' looping down each row and copying any row with the selectedStatus
+            If wsSource.Cells(i, "K").Value = selectedStatus Then
+                wsSource.Rows(i).Copy Destination:=wsDest.Rows(destRow)
+                destRow = destRow + 1
+            End If
+        Next i
+        MsgBox "Rows with status '" & selectedStatus & "' have been copied to the 'New Report' sheet.", vbInformation
+    ElseIf Me.chkClaimRange = True Then
+          
+        ' Loop through each row
+        For i = 2 To lastRow
+            If wsSource.Cells(i, "K").Value = selectedStatus Then
+                ' Add the value from column P to the value in column N
+                totalClaim = wsSource.Cells(i, "N").Value + wsSource.Cells(i, "P").Value
+                
+                ' Check if the total claim falls within the claim range
+                If totalClaim >= lowerBound And totalClaim <= upperBound Then
+                    wsSource.Rows(i).Copy Destination:=wsDest.Rows(destRow)
+                    destRow = destRow + 1
+                End If
+            End If
+        Next i
+         MsgBox "Rows with status '" & selectedStatus & "' and within '£" & lowerBound & "' and '£" & upperBound & "' have been copied to the 'New Report' sheet.", vbInformation
+    End If
+    
+    Me.Hide 'close ACR
+
+
+End Sub
+
+Private Sub chkClaimRange_Click()
+
+    'calls toggle bound controls and then assigns checkbox
+    ToggleBoundControls Me.chkClaimRange.Value
+    
+End Sub
+
+Private Sub ToggleBoundControls(visible As Boolean)
+
+    'subroutine to toggle the boundry controls
+    Me.txtLowerBound.visible = visible
+    Me.txtUpperBound.visible = visible
+    Me.lblLowerClaimBound.visible = visible
+    Me.lblUpperClaimBound.visible = visible
+    
+End Sub
+
+Private Sub cmbStatus_Change()
+
+    'subroutine to toggle other objects automatically based on status box
+    If Me.cmbStatus.Value = "Outstanding" Then
+        Me.chkClaimRange.Value = True
+    Else
+        Me.chkClaimRange.Value = False
+    End If
+    ToggleBoundControls Me.chkClaimRange.Value
+    
+End Sub
+
+Private Sub chkstatus_Click()
+
+    'status checkbox
+    If Me.chkstatus = True Then
+        Me.cmbstatus2.visible = True
+    Else
+        Me.cmbstatus2.visible = False
+    End If
+End Sub
