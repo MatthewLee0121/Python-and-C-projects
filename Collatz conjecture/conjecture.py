@@ -93,11 +93,11 @@ def get_values(num = None):
 
 #Function for if num is even
 def even(num):
-    return int(num / 6) 
+    return int(num / 4) 
 
 #Function for if num is odd
 def odd(num):
-    return (9 * num) + 3
+    return (12 * num) + 4
 
 #Function to get input value
 def inputValue():
@@ -109,7 +109,7 @@ def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
 def write_to_new_file(data):
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values', 'a') as file:
+    with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\12nplus4div4', 'a') as file:
         file.write(str(data) + '\n')
 
 def send_to_database(data):
@@ -127,7 +127,7 @@ def get_dictionarys():
     dicts = []
     with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\stored values(3n+1)', 'r') as file:
         for line_num, line in enumerate(file):
-            if line_num in range(200000):
+            if line_num in range(20000):
                 try:
                     d = eval(line.strip())
                     dicts.append(d)
@@ -138,7 +138,7 @@ def get_dictionarys():
 
 def get_dictionarys6():
     highest_values = {}  # Initialize dictionary to store the highest values for each key
-    with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\stored values(3n+1)', 'r') as file:
+    with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\12nplus4div4', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(10000):
                 try:
