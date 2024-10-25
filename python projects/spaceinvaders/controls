@@ -4,8 +4,8 @@ import time
 #background turtle code
 turtle.bgcolor('black')
 window = turtle.Screen()
-turtle.addshape(r"C:\Users\matty\Pictures\Screenshot 2023-12-28 170200.gif")
-turtle.addshape(r"C:\Users\matty\Pictures\Screenshot 2023-12-28 194935.gif")
+#turtle.addshape(r"C:\Users\matty\Pictures\butterfly-icon.jpg")
+#turtle.addshape(r"C:\Users\matty\Pictures\Screenshot 2023-12-28 194935.gif")
 
 #global variables
 counter = 0
@@ -14,23 +14,24 @@ test_lives = 4
 #player turtle code
 player = turtle.Turtle()
 player.color('white')
-player.shape(r"C:\Users\matty\Pictures\Screenshot 2023-12-28 170200.gif")
+player.shape("turtle")
 player.penup()
 player.left(90)
-player.goto(0.00 , -400)
+player.goto(0.00 , -200)
 
 #gun code
 gun = turtle.Turtle()
 gun.color('')
 gun.left(90)
-gun.goto(0.00, -200)
+gun.goto(0.00, -100)
 
 #test object
 test = turtle.Turtle()
-test.shape(r"C:\Users\matty\Pictures\Screenshot 2023-12-28 194935.gif")
+test.color('white')
+test.shape("turtle")
 test.penup()
-test.speed(0)
-test.goto(-window.window_width() / 2, 0)
+test.speed(1)
+test.goto(-window.window_width() / 2, -50)
 
 def move_test():
 
