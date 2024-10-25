@@ -3,13 +3,13 @@
 def insidebracket():
     #inside the bracket opposite
     xCoef = int(input("what is the coefficient of x? "))
-    xaddition = int(input("what is the amount added or subtracted? remember to include the sign "))
-    xaddition = xaddition * -1
+    xAddition = int(input("what is the amount added or subtracted? remember to include the sign "))
+    xAddition = xAddition * -1
     xCoef = 1 / xCoef
 
-insidebracket()
-
-def indetifytrigfunc():
+def identifytrigfunc():
     trigfunc = input("sin, cos or tan? ")
 
     return trigfunc
+
+print(insidebracket(), identifytrigfunc())
