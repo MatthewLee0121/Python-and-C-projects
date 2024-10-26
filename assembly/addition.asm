@@ -16,7 +16,7 @@ BEG: ;start to beg this pc to work
     MOV AL, NUM1 ;moves num1 into al registery
     ADD AL, NUM2 ;adds value of num2 to the al registery value
     ADD AL, '0' ;adds a 0 to al registery
-    MOV RESULT, AL ;moves al value onto the end of result value
+    MOV RESULT, AH ;moves al value onto the end of result value
 
     MOV AH, 9
     LEA DX, OUTPUT
