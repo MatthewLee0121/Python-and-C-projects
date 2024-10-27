@@ -12,3 +12,4 @@ if __name__ == "__main__":
     asset_path = "/Game/HwaseongHaenggung/Textures"
     lod_bias = 8
     set_lod_bias(asset_path, lod_bias)
+
