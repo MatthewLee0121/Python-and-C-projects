@@ -109,7 +109,7 @@ def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
 def write_to_new_file(data):
-    with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\12nplus4div4', 'a') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values.txt', 'a') as file:
         file.write(str(data) + '\n')
 
 def send_to_database(data):
@@ -125,7 +125,7 @@ def send_to_database(data):
 
 def get_dictionarys():
     dicts = []
-    with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\stored values(3n+1)', 'r') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values.txt', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(20000):
                 try:
@@ -138,7 +138,7 @@ def get_dictionarys():
 
 def get_dictionarys6():
     highest_values = {}  # Initialize dictionary to store the highest values for each key
-    with open(r'C:\Users\matty\Documents\git\Python-and-C-projects\Collatz conjecture\12nplus4div4', 'r') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values(3n+1)', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(10000):
                 try:
