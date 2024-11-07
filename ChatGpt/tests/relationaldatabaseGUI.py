@@ -3,7 +3,7 @@ from tkinter import messagebox
 import sqlite3
 
 # Connect/create database
-conn = sqlite3.connect('')
+conn = sqlite3.connect('library.db')
 cursor = conn.cursor()
 
 # Create some tables if they do not exist
@@ -89,6 +89,32 @@ def view_books():
     # Close the database connection
     conn.close()
 
+# Function to run SQL queries
+def run_sql_query():
+    query = entry_sql_query.get()
+
+    if query.strip():
+        try:
+            conn = sqlite3.connect('library.db')
+            cursor = conn.cursor()
+            cursor.execute(query)
+            conn.commit()
+
+            # Fetch results if it's a SELECT query
+            if query.strip().lower().startswith("select"):
+                rows = cursor.fetchall()
+                text_result.delete(1.0, tk.END)  # Clear previous result
+                for row in rows:
+                    text_result.insert(tk.END, f"{row}\n")
+            else:
+                messagebox.showinfo("Success", "Query executed successfully")
+
+            conn.close()
+        except sqlite3.Error as e:
+            messagebox.showerror("Error", f"An error occurred: {e}")
+    else:
+        messagebox.showerror("Error", "Please enter a SQL query")
+
 # Set up the main window
 root = tk.Tk()
 root.title("Library Management System")
@@ -129,6 +155,19 @@ button_view_books.grid(row=5, column=0, columnspan=2)
 listbox_books = tk.Listbox(root, width=80, height=10)
 listbox_books.grid(row=6, column=0, columnspan=2)
 
+# SQL Query Section
+label_sql_query = tk.Label(root, text="Enter SQL Query:")
+label_sql_query.grid(row=7, column=0)
+
+entry_sql_query = tk.Entry(root, width=60)
+entry_sql_query.grid(row=7, column=1)
+
+button_run_sql = tk.Button(root, text="Run Query", command=run_sql_query)
+button_run_sql.grid(row=8, column=0, columnspan=2)
+
+# Text widget to display the query results
+text_result = tk.Text(root, width=80, height=10)
+text_result.grid(row=9, column=0, columnspan=2)
+
 # Run the Tkinter event loop
 root.mainloop()
- 
