@@ -12,7 +12,7 @@ def createString(num):
     print(f'{listIntoString} = {answer}')
     return answer
 
-createString(50000)
+createString(5)
 
 endtime = time.time()
 elapsed_time = endtime - starttime
