@@ -23,8 +23,7 @@ def viewDBTable():
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM testtable")
     rows = cursor.fetchall()
-    for row in rows:
-        print(row)
+    return rows
 
 # Function to add a new entry to the test table
 def add2Test(test_id, name, age):
