@@ -54,7 +54,13 @@ def main():
         what_do = " "
         return what_do
     if what_do[0] == "5":
-        dictionarys = get_dictionarys()
+        dictionarys = get_dictionarys(100)
+        plot_multi_line_graph(dictionarys)
+        dictionarys = get_dictionarys(1000)
+        plot_multi_line_graph(dictionarys)
+        dictionarys = get_dictionarys(10000)
+        plot_multi_line_graph(dictionarys)
+        dictionarys = get_dictionarys(50000)
         plot_multi_line_graph(dictionarys)
     if what_do[0] == "6":
         dictionarys = get_dictionarys6()
@@ -93,11 +99,11 @@ def get_values(num = None):
 
 #Function for if num is even
 def even(num):
-    return int(num / 4) 
+    return int(num / 2) 
 
 #Function for if num is odd
 def odd(num):
-    return (12 * num) + 4
+    return (3 * num) + 1
 
 #Function to get input value
 def inputValue():
@@ -109,7 +115,7 @@ def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
 def write_to_new_file(data):
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values.txt', 'a') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values1.txt', 'a') as file:
         file.write(str(data) + '\n')
 
 def send_to_database(data):
@@ -123,11 +129,11 @@ def send_to_database(data):
     connection.commit()
     connection.close()
 
-def get_dictionarys():
+def get_dictionarys(t):
     dicts = []
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values.txt', 'r') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values1.txt', 'r') as file:
         for line_num, line in enumerate(file):
-            if line_num in range(20000):
+            if line_num in range(t):
                 try:
                     d = eval(line.strip())
                     dicts.append(d)
