@@ -372,9 +372,9 @@ def LoadHomeWindow():
     homeWindow.mainloop()
 
 #comment these out when working on different screens
-LoadLogIn()
+#LoadLogIn()
 #LoadHomeWindow()
-#CreateHomeScreen()
+CreateHomeScreen()
 
 # Close the database when GUI is closed
 closeDB()
