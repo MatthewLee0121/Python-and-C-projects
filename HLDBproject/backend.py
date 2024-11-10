@@ -1,6 +1,7 @@
 import sqlite3
 import os
 from tkinter import messagebox as msgbx
+import hashlib
 
 # Set up the database connection
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'HLDB.db')
@@ -24,6 +25,48 @@ def initialiseDB():
         )
     ''')
     conn.commit()
+
+#hash the password
+def hash_password(password: str) -> str:
+    return hashlib.sha256(password.encode()).hexdigest()
+
+#initiates the username and password table
+def InitiateUNPWTable():
+    cursor = conn.cursor()
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            username TEXT NOT NULL UNIQUE,
+            password_hash TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+    insert_user("testuser", "securepassword123")
+
+#function to add to usernames and passwords table
+def insert_user(username: str, password: str):
+
+    cursor = conn.cursor()
+    
+    try:
+        password_hash = hash_password(password)
+        cursor.execute("INSERT INTO users (username, password_hash) VALUES (?, ?)", (username, password_hash))
+        conn.commit()
+        print("User added successfully!")
+    except sqlite3.IntegrityError:
+        print("Username already exists.")
+
+def verify_credentials(username: str, password: str) -> bool:
+    cursor = conn.cursor()
+    password_hash = hash_password(password)
+    cursor.execute("SELECT password_hash FROM users WHERE username = ?", (username,))
+    result = cursor.fetchone()
+    
+    if result and result[0] == password_hash:
+        return True
+    else:
+        return False
+
 
 # Function to view the test table
 def viewDBTable(table_name):

@@ -92,7 +92,7 @@ def CreateHomeScreen():
     closeDB()
 
 
-def createLogIn():
+def LoadLogIn():
 
     OUTPUT_PATH = Path(__file__).parent
     ASSETS_PATH = OUTPUT_PATH / Path(r"c:\Users\mat_m\Coding_with_beans\HLDBproject\assets\loginAssets")
@@ -100,15 +100,29 @@ def createLogIn():
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
     
-    window = Tk()
+    #initiate usernames and password
+    InitiateUNPWTable()
 
-    window.geometry("650x400")
-    window.configure(bg = "#2F4B9F")
-    window.title("Hazard Records Database - Login Page")
+    def login():
+        username = entryUserName.get()
+        password = entryPassWord.get()
+
+        if verify_credentials(username, password):
+            print("Login successful!")
+            logInWindow.destroy()
+            LoadHomeWindow()
+        else:
+            msgbx.showerror("Error", "Invalid username or password")
+
+    logInWindow = Tk()
+
+    logInWindow.geometry("650x400")
+    logInWindow.configure(bg = "#2F4B9F")
+    logInWindow.title("Hazard Records Database - Login Page")
 
 
     canvas = Canvas(
-        window,
+        logInWindow,
         bg = "#FFFFFF",
         height = 400,
         width = 650,
@@ -140,7 +154,7 @@ def createLogIn():
         image=buttonLoginImage,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("loginButton clicked"),
+        command=login,
         relief="flat"
     )
     loginButton.place(
@@ -150,20 +164,20 @@ def createLogIn():
         height=25.0
     )
 
-    entry_image_1 = PhotoImage(
-        file=relative_to_assets("entry_1.png"))
-    entry_bg_1 = canvas.create_image(
+    entryPassWordImage = PhotoImage(
+        file=relative_to_assets("entryPassWord.png"))
+    entryPassWordBg = canvas.create_image(
         333.0,
         225.5,
-        image=entry_image_1
+        image=entryPassWordImage
     )
-    entry_1 = Entry(
+    entryPassWord = Entry(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
-    entry_1.place(
+    entryPassWord.place(
         x=233.0,
         y=213.0,
         width=200.0,
@@ -179,20 +193,20 @@ def createLogIn():
         font=("Kodchasan Regular", 12 * -1)
     )
 
-    entry_image_2 = PhotoImage(
-        file=relative_to_assets("entry_2.png"))
-    entry_bg_2 = canvas.create_image(
+    entryUserNameImage = PhotoImage(
+        file=relative_to_assets("entryUserName.png"))
+    entryUserNameBg = canvas.create_image(
         333.0,
         187.5,
-        image=entry_image_2
+        image=entryUserNameImage
     )
-    entry_2 = Entry(
+    entryUserName = Entry(
         bd=0,
         bg="#FFFFFF",
         fg="#000716",
         highlightthickness=0
     )
-    entry_2.place(
+    entryUserName.place(
         x=233.0,
         y=175.0,
         width=200.0,
@@ -226,10 +240,11 @@ def createLogIn():
         outline="")
 
 
-    window.resizable(False, False)
-    window.mainloop()
+    logInWindow.resizable(False, False)
+    logInWindow.mainloop()
+    closeDB()
 
-def CreateHome():
+def LoadHomeWindow():
 
     OUTPUT_PATH = Path(__file__).parent
     ASSETS_PATH = OUTPUT_PATH / Path(r"c:\Users\mat_m\Coding_with_beans\HLDBproject\assets\homeAssets")
@@ -240,14 +255,14 @@ def CreateHome():
     #initialise the DB
     initialiseDB()
     
-    window = Tk()
+    homeWindow = Tk()
 
-    window.geometry("650x400")
-    window.configure(bg = "#FFFFFF")
-
+    homeWindow.geometry("650x400")
+    homeWindow.configure(bg = "#FFFFFF")
+    homeWindow.title("Hazard Records Database - Home Page")
 
     canvas = Canvas(
-        window,
+        homeWindow,
         bg = "#FFFFFF",
         height = 400,
         width = 650,
@@ -353,12 +368,12 @@ def CreateHome():
         width=146.0,
         height=86.0
     )
-    window.resizable(False, False)
-    window.mainloop()
+    homeWindow.resizable(False, False)
+    homeWindow.mainloop()
 
 #comment these out when working on different screens
-#createLogIn()
-CreateHome()
+LoadLogIn()
+#LoadHomeWindow()
 #CreateHomeScreen()
 
 # Close the database when GUI is closed
