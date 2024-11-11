@@ -24,9 +24,9 @@ printLine()
 
 
 data = { #csv example
-    'Name': ['Alice', 'Bob', 'Charlie'],
-    'Age': [25, 30, 35],
-    'City': ['New York', 'Paris', 'London']
+    'Name': ['Alice', 'Bob', 'Charlie', 'Batuhan'],
+    'Age': [25, 30, 35, 24],
+    'City': ['New York', 'Paris', 'London', 'Newcastle']
 }
 
 datadf = pd.DataFrame(data) #creates a data frame from csv
@@ -52,3 +52,16 @@ print("--------------------datadf.iloc[0] (select row via iloc index)-----------
 print(datadf.iloc[0]) #index row 0 
 print("--------------------datadf.loc[0] (select row via  label index)-------------------------")
 print(datadf.loc[1]) #index row 1 if labeled
+print("--------------------df.columns (get column name)-------------------------")
+print(datadf.columns)
+print("--------------------filtereddata = datadf[datadf['Age'] > 30] (filter via criteria)-------------------------")
+filtereddata = datadf[datadf['Age'] > 30]
+print(filtereddata)
+print("--------------------filtereddata = datadf[datadf['Age'] > 30] (filter via criteria)-------------------------")
+filtereddata2 = datadf[datadf['City'] == 'Newcastle']
+print(filtereddata2)
+print("--------------------prints datadf add salery column add 1 to age then print again to see change-------------------------")
+print(datadf)
+datadf['Salary'] = [50000, 60000, 70000, 0]
+datadf['Age'] = datadf['Age'] + 1
+print(datadf)
