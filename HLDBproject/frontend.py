@@ -253,7 +253,7 @@ def LoadHomeWindow():
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
     
-    def ButtonViewATablePressed():
+    def ButtonViewATableActivated():
         homeWindow.destroy()
         loadViewWindow()
 
@@ -364,7 +364,7 @@ def LoadHomeWindow():
         image=buttonViewATableImage,
         borderwidth=0,
         highlightthickness=0,
-        command=ButtonViewATablePressed(),
+        command=ButtonViewATableActivated,
         relief="flat"
     )
     buttonViewATable.place(
