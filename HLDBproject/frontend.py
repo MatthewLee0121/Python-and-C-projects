@@ -45,9 +45,9 @@ class LogInWindow:
 
         if backend.verify_credentials(username, password):
             self.logInWindow.destroy()
-            backend.closeDB()
+            HomeWindow()
         else:
-            msgbx.showerror("Error", "Invalid username or password")
+            msg.showerror("Error", "Invalid username or password")
 
     def create_background(self):
         self.canvas.create_rectangle(
@@ -248,8 +248,8 @@ class HomeWindow:
         buttonViewATable.place(x=103.0, y=114.0, width=146.0, height=86.0)
 
     def button_view_a_table_pressed(self):
-        # Close this window and open the view window
         self.homeWindow.destroy()
+        ViewWindow()
 
 class ViewWindow:
     def __init__(self):
@@ -395,3 +395,6 @@ class ViewWindow:
             relief="flat"
         )
         button_5.place(x=24.0, y=140.0, width=109.0, height=32.0)
+
+if __name__ == "__main__":
+    LogInWindow()
