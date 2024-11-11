@@ -94,8 +94,7 @@ def CreateHomeScreen():
 
 def LoadLogIn():
 
-    OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"c:\Users\mat_m\Coding_with_beans\HLDBproject\assets\loginAssets")
+    ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'loginAssets')
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
@@ -247,8 +246,7 @@ def LoadLogIn():
 
 def LoadHomeWindow():
 
-    OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"c:\Users\mat_m\Coding_with_beans\HLDBproject\assets\homeAssets")
+    ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'homeAssets')
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
@@ -377,8 +375,8 @@ def LoadHomeWindow():
     homeWindow.mainloop()
 
 def loadViewWindow():
-    OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"c:\Users\mat_m\Coding_with_beans\HLDBproject\assets\viewAssets")
+
+    ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'viewAssets')
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
