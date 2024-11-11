@@ -253,6 +253,10 @@ def LoadHomeWindow():
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
     
+    def ButtonViewATablePressed():
+        homeWindow.destroy()
+        loadViewWindow()
+
     #initialise the DB
     initialiseDB()
     
@@ -360,7 +364,7 @@ def LoadHomeWindow():
         image=buttonViewATableImage,
         borderwidth=0,
         highlightthickness=0,
-        command=lambda: print("buttonViewATable clicked"),
+        command=ButtonViewATablePressed(),
         relief="flat"
     )
     buttonViewATable.place(
@@ -374,7 +378,7 @@ def LoadHomeWindow():
 
 def loadViewWindow():
     OUTPUT_PATH = Path(__file__).parent
-    ASSETS_PATH = OUTPUT_PATH / Path(r"C:\Users\mat_m\OneDrive\Desktop\build\build\assets\viewAssets")
+    ASSETS_PATH = OUTPUT_PATH / Path(r"c:\Users\mat_m\Coding_with_beans\HLDBproject\assets\viewAssets")
 
     def relative_to_assets(path: str) -> Path:
         return ASSETS_PATH / Path(path)
@@ -524,7 +528,7 @@ def loadViewWindow():
         relief="flat"
     )
     button_2.place(
-        x=269.0,
+        x=220,
         y=418.0,
         width=109.26072692871094,
         height=32.340213775634766
@@ -614,10 +618,10 @@ def loadViewWindow():
 
 
 #comment these out when working on different screens
-#LoadLogIn()
+LoadLogIn()
 #LoadHomeWindow()
 #CreateHomeScreen()
-loadViewWindow()
+#loadViewWindow()
 
 # Close the database when GUI is closed
 closeDB()
