@@ -1,625 +1,397 @@
 import tkinter as tk
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage
-from backend import *
+from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox as msg
+import backend
+import os
 
-def CreateHomeScreen():
-    # Initialize the database table
-    initialiseDB()
+class LogInWindow:
+    def __init__(self):
+        self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'loginAssets')
 
-    # GUI setup
-    root = tk.Tk()
-    root.title("Test DB")
+        backend.InitiateUNPWTable()
 
-    # Button to add data to the test table
-    def on_add_test():
-        test_id = entry_test_id.get()
-        name = entry_name.get()
-        age = entry_age.get()
+        # Create the main window
+        self.logInWindow = Tk()
+        self.logInWindow.geometry("650x400")
+        self.logInWindow.configure(bg="#2F4B9F")
+        self.logInWindow.title("Hazard Record Database - Login Page")
 
-        table_name = get_dropdown_value()
-        add2Test(table_name, test_id, name, age)
-
-        entry_test_id.delete(0, tk.END)
-        entry_name.delete(0, tk.END)
-        entry_age.delete(0, tk.END)
-
-    # Function to view the selected table
-    def on_view_table():
-        # Get the selected table from the dropdown
-        table_name = get_dropdown_value()
-
-        # Fetch rows from the selected table and update the listbox
-        rows = viewDBTable(table_name)
-
-        # Clear the listbox before adding new data
-        listbox_view_test.delete(0, tk.END)
+        # Create canvas
+        self.canvas = Canvas(
+            self.logInWindow,
+            bg="#FFFFFF",
+            height=400,
+            width=650,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+        self.canvas.place(x=0, y=0)
         
-        # Insert data into the listbox
-        for row in rows:
-            listbox_view_test.insert(tk.END, f"test_id: {row[0]} | name: {row[1]} | age: {row[2]}")
+        self.create_background()
+        self.create_text()
+        self.create_entries()
+        self.create_buttons()
 
+        self.logInWindow.resizable(False, False)
+        self.logInWindow.mainloop()
 
-    # Entry fields and labels for user input
-    label_test_id = tk.Label(root, text="Test ID:")
-    label_test_id.grid(row=0, column=0)
+    def relative_to_assets(self, path: str) -> Path:
+        return Path(self.ASSETS_PATH) / Path(path)
 
-    entry_test_id = tk.Entry(root)
-    entry_test_id.grid(row=0, column=1)
+    def login(self):
+        username = self.entryUserName.get()
+        password = self.entryPassWord.get()
 
-    label_name = tk.Label(root, text="Name:")
-    label_name.grid(row=1, column=0)
-
-    entry_name = tk.Entry(root)
-    entry_name.grid(row=1, column=1)
-
-    label_age = tk.Label(root, text="Age:")
-    label_age.grid(row=2, column=0)
-
-    entry_age = tk.Entry(root)
-    entry_age.grid(row=2, column=1)
-
-    button_add_test = tk.Button(root, text="Add Test", command=on_add_test)
-    button_add_test.grid(row=4, column=1, columnspan=2)
-
-    button_view_table = tk.Button(root, text="View Table", command=on_view_table)
-    button_view_table.grid(row=2, column=2, columnspan=2)
-
-    #displays a list box to view tables
-    listbox_view_test = tk.Listbox(root, width=80, height=10)
-    listbox_view_test.grid(row=0, column=11, columnspan=2, rowspan=6)
-
-
-    table_names = get_table_names()
-    selected_table = tk.StringVar(root)
-    selected_table.set(str(table_names[0]))
-
-    label_tabel_name = tk.Label(root, text="Table Name: ")
-    label_tabel_name.grid(row=3, column=0)
-
-    table_dropdown = tk.OptionMenu(root, selected_table, *table_names)
-    table_dropdown.grid(row=3, column=1)
-
-    def get_dropdown_value():
-        return selected_table.get()
-
-
-
-    # Run the GUI loop
-    root.mainloop()
-
-    # Close the database when GUI is closed
-    closeDB()
-
-
-def LoadLogIn():
-
-    ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'loginAssets')
-
-    def relative_to_assets(path: str) -> Path:
-        return ASSETS_PATH / Path(path)
-    
-    #initiate usernames and password
-    InitiateUNPWTable()
-
-    def login():
-        username = entryUserName.get()
-        password = entryPassWord.get()
-
-        if verify_credentials(username, password):
-            print("Login successful!")
-            logInWindow.destroy()
-            LoadHomeWindow()
-            #CreateHomeScreen() #delete this later
+        if backend.verify_credentials(username, password):
+            self.logInWindow.destroy()
+            backend.closeDB()
         else:
             msgbx.showerror("Error", "Invalid username or password")
 
-    logInWindow = Tk()
+    def create_background(self):
+        self.canvas.create_rectangle(
+            0.0,
+            0.0,
+            650.0,
+            400.0,
+            fill="#2F4B9F",
+            outline=""
+        )
+        # Logo image
+        self.image_logo = PhotoImage(file=self.relative_to_assets("logo.png"))
+        self.canvas.create_image(568.0, 362.0, image=self.image_logo)
 
-    logInWindow.geometry("650x400")
-    logInWindow.configure(bg = "#2F4B9F")
-    logInWindow.title("Hazard Record Database - Login Page")
+    def create_text(self):
+        self.canvas.create_text(
+            112.0,
+            110.0,
+            anchor="nw",
+            text="Hazard Record Database",
+            fill="#FFFFFF",
+            font=("Kodchasan Bold", 36 * -1)
+        )
+        self.canvas.create_rectangle(
+            94.0,
+            162.0,
+            556.9999941562619,
+            163.99999994451028,
+            fill="#FFFFFF",
+            outline=""
+        )
+        self.canvas.create_text(
+            167.0,
+            180.0,
+            anchor="nw",
+            text="Username:",
+            fill="#FFFFFF",
+            font=("Kodchasan Regular", 12 * -1)
+        )
+        self.canvas.create_text(
+            167.0,
+            218.0,
+            anchor="nw",
+            text="Password:",
+            fill="#FFFFFF",
+            font=("Kodchasan Regular", 12 * -1)
+        )
 
+    def create_entries(self):
+        # Username entry
+        self.entryUserNameImage = PhotoImage(file=self.relative_to_assets("entryUserName.png"))
+        self.canvas.create_image(333.0, 187.5, image=self.entryUserNameImage)
+        self.entryUserName = Entry(
+            bd=0,
+            bg="#FFFFFF",
+            fg="#000716",
+            highlightthickness=0
+        )
+        self.entryUserName.place(x=233.0, y=175.0, width=200.0, height=23.0)
 
-    canvas = Canvas(
-        logInWindow,
-        bg = "#FFFFFF",
-        height = 400,
-        width = 650,
-        bd = 0,
-        highlightthickness = 0,
-        relief = "ridge"
-    )
+        # Password entry
+        self.entryPassWordImage = PhotoImage(file=self.relative_to_assets("entryPassWord.png"))
+        self.canvas.create_image(333.0, 225.5, image=self.entryPassWordImage)
+        self.entryPassWord = Entry(
+            bd=0,
+            bg="#FFFFFF",
+            fg="#000716",
+            highlightthickness=0,
+            show="*"
+        )
+        self.entryPassWord.place(x=233.0, y=213.0, width=200.0, height=23.0)
 
-    canvas.place(x = 0, y = 0)
-    canvas.create_rectangle(
-        0.0,
-        0.0,
-        650.0,
-        400.0,
-        fill="#2F4B9F",
-        outline="")
-
-    image_logo = PhotoImage(
-        file=relative_to_assets("logo.png"))
-    logo = canvas.create_image(
-        568.0,
-        362.0,
-        image=image_logo
-    )
-
-    buttonLoginImage = PhotoImage(
-        file=relative_to_assets("loginButton.png"))
-    loginButton = Button(
-        image=buttonLoginImage,
-        borderwidth=0,
-        highlightthickness=0,
-        command=login,
-        relief="flat"
-    )
-    loginButton.place(
-        x=283.0,
-        y=251.0,
-        width=100.0,
-        height=25.0
-    )
-
-    entryPassWordImage = PhotoImage(
-        file=relative_to_assets("entryPassWord.png"))
-    entryPassWordBg = canvas.create_image(
-        333.0,
-        225.5,
-        image=entryPassWordImage
-    )
-    entryPassWord = Entry(
-        bd=0,
-        bg="#FFFFFF",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entryPassWord.place(
-        x=233.0,
-        y=213.0,
-        width=200.0,
-        height=23.0
-    )
-
-    canvas.create_text(
-        167.0,
-        218.0,
-        anchor="nw",
-        text="Password:",
-        fill="#FFFFFF",
-        font=("Kodchasan Regular", 12 * -1)
-    )
-
-    entryUserNameImage = PhotoImage(
-        file=relative_to_assets("entryUserName.png"))
-    entryUserNameBg = canvas.create_image(
-        333.0,
-        187.5,
-        image=entryUserNameImage
-    )
-    entryUserName = Entry(
-        bd=0,
-        bg="#FFFFFF",
-        fg="#000716",
-        highlightthickness=0
-    )
-    entryUserName.place(
-        x=233.0,
-        y=175.0,
-        width=200.0,
-        height=23.0
-    )
-
-    canvas.create_text(
-        167.0,
-        180.0,
-        anchor="nw",
-        text="Username:",
-        fill="#FFFFFF",
-        font=("Kodchasan Regular", 12 * -1)
-    )
-
-    canvas.create_text(
-        112.0,
-        110.0,
-        anchor="nw",
-        text="Hazard Record Database",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 36 * -1)
-    )
-
-    canvas.create_rectangle(
-        94.0,
-        162.0,
-        556.9999941562619,
-        163.99999994451028,
-        fill="#FFFFFF",
-        outline="")
+    def create_buttons(self):
+        # Login button
+        self.buttonLoginImage = PhotoImage(file=self.relative_to_assets("loginButton.png"))
+        self.loginButton = Button(
+            image=self.buttonLoginImage,
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.login,
+            relief="flat"
+        )
+        self.loginButton.place(x=283.0, y=251.0, width=100.0, height=25.0)
 
 
-    logInWindow.resizable(False, False)
-    logInWindow.mainloop()
-    closeDB()
+class HomeWindow:
+    def __init__(self,):
+        self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'homeAssets')
+        self.initialise_db()
+        
+        # Create the main window
+        self.homeWindow = Tk()
+        self.homeWindow.geometry("650x400")
+        self.homeWindow.configure(bg="#FFFFFF")
+        self.homeWindow.title("Hazard Record Database - Home Page")
+        
+        # Create canvas
+        self.canvas = Canvas(
+            self.homeWindow,
+            bg="#FFFFFF",
+            height=400,
+            width=650,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+        self.canvas.place(x=0, y=0)
 
-def LoadHomeWindow():
+        self.create_background()
+        self.create_text()
+        self.create_images()
+        self.create_buttons()
+        
+        self.homeWindow.resizable(False, False)
+        self.homeWindow.mainloop()
 
-    ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'homeAssets')
+    def relative_to_assets(self, path: str) -> Path:
+        return Path(self.ASSETS_PATH) / Path(path)
 
-    def relative_to_assets(path: str) -> Path:
-        return ASSETS_PATH / Path(path)
-    
-    def ButtonViewATableActivated():
-        homeWindow.destroy()
-        loadViewWindow()
+    def initialise_db(self):
+        backend.initialiseDB()
 
-    #initialise the DB
-    initialiseDB()
-    
-    homeWindow = Tk()
+    def create_background(self):
+        self.canvas.create_rectangle(
+            0.0,
+            0.0,
+            650.0,
+            400.0,
+            fill="#2F4B9F",
+            outline=""
+        )
 
-    homeWindow.geometry("650x400")
-    homeWindow.configure(bg = "#FFFFFF")
-    homeWindow.title("Hazard Record Database - Home Page")
+    def create_text(self):
+        self.canvas.create_text(
+            11.0,
+            6.0,
+            anchor="nw",
+            text="Hazard Logs Database - Home",
+            fill="#FFFFFF",
+            font=("Kodchasan Bold", 36 * -1)
+        )
+        self.canvas.create_rectangle(
+            10.0,
+            58.0,
+            636.0,
+            59.0,
+            fill="#FFFFFF",
+            outline=""
+        )
 
-    canvas = Canvas(
-        homeWindow,
-        bg = "#FFFFFF",
-        height = 400,
-        width = 650,
-        bd = 0,
-        highlightthickness = 0,
-        relief = "ridge"
-    )
+    def create_images(self):
+        # Logo image
+        self.image_logo = PhotoImage(file=self.relative_to_assets("logo.png"))
+        self.canvas.create_image(568.0, 362.0, image=self.image_logo)
 
-    canvas.place(x = 0, y = 0)
-    canvas.create_rectangle(
-        0.0,
-        0.0,
-        650.0,
-        400.0,
-        fill="#2F4B9F",
-        outline="")
+    def create_buttons(self):
+        # Button images
+        self.buttonChangeATableImage = PhotoImage(file=self.relative_to_assets("buttonChangeATable.png"))
+        self.buttonDeleteATableImage = PhotoImage(file=self.relative_to_assets("buttonDeleteATable.png"))
+        self.buttonAddATableImage = PhotoImage(file=self.relative_to_assets("buttonAddATable.png"))
+        self.buttonViewATableImage = PhotoImage(file=self.relative_to_assets("buttonViewATable.png"))
 
-    image_logo = PhotoImage(
-        file=relative_to_assets("logo.png"))
-    logo = canvas.create_image(
-        568.0,
-        362.0,
-        image=image_logo
-    )
+        # Buttons with their commands
+        buttonChangeATable = Button(
+            image=self.buttonChangeATableImage,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("buttonChangeATable clicked"),
+            relief="flat"
+        )
+        buttonChangeATable.place(x=378.0, y=114.0, width=146.0, height=86.0)
 
-    canvas.create_text(
-        11.0,
-        6.0,
-        anchor="nw",
-        text="Hazard Logs Database - Home",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 36 * -1)
-    )
+        buttonDeleteATable = Button(
+            image=self.buttonDeleteATableImage,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("buttonDeleteATable clicked"),
+            relief="flat"
+        )
+        buttonDeleteATable.place(x=378.0, y=229.0, width=146.0, height=86.0)
 
-    canvas.create_rectangle(
-        10.0,
-        58.0,
-        636.0,
-        59.0,
-        fill="#FFFFFF",
-        outline="")
+        buttonAddATable = Button(
+            image=self.buttonAddATableImage,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("buttonAddATable clicked"),
+            relief="flat"
+        )
+        buttonAddATable.place(x=103.0, y=229.0, width=146.0, height=86.0)
 
-    buttonChangeATableImage = PhotoImage(
-        file=relative_to_assets("buttonChangeATable.png"))
-    buttonChangeATable = Button(
-        image=buttonChangeATableImage,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("buttonChangeATable clicked"),
-        relief="flat"
-    )
-    buttonChangeATable.place(
-        x=378.0,
-        y=114.0,
-        width=146.0,
-        height=86.0
-    )
+        buttonViewATable = Button(
+            image=self.buttonViewATableImage,
+            borderwidth=0,
+            highlightthickness=0,
+            command=self.button_view_a_table_pressed,
+            relief="flat"
+        )
+        buttonViewATable.place(x=103.0, y=114.0, width=146.0, height=86.0)
 
-    buttonDeleteATableImage = PhotoImage(
-        file=relative_to_assets("buttonDeleteATable.png"))
-    buttonDeleteATable = Button(
-        image=buttonDeleteATableImage,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("buttonDeleteATable clicked"),
-        relief="flat"
-    )
-    buttonDeleteATable.place(
-        x=378.0,
-        y=229.0,
-        width=146.0,
-        height=86.0
-    )
+    def button_view_a_table_pressed(self):
+        # Close this window and open the view window
+        self.homeWindow.destroy()
 
-    buttonAddATableImage = PhotoImage(
-        file=relative_to_assets("buttonAddATable.png"))
-    buttonAddATable = Button(
-        image=buttonAddATableImage,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("buttonAddATable clicked"),
-        relief="flat"
-    )
-    buttonAddATable.place(
-        x=103.0,
-        y=229.0,
-        width=146.0,
-        height=86.0
-    )
+class ViewWindow:
+    def __init__(self):
+        self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'viewAssets')
+        self.window = Tk()
+        self.window.geometry("1395x784")
+        self.window.configure(bg="#FFFFFF")
+        
+        # Create canvas
+        self.canvas = Canvas(
+            self.window,
+            bg="#FFFFFF",
+            height=784,
+            width=1395,
+            bd=0,
+            highlightthickness=0,
+            relief="ridge"
+        )
+        self.canvas.place(x=0, y=0)
+        
+        # Draw components
+        self.create_background()
+        self.create_lines()
+        self.create_text()
+        self.create_images()
+        self.create_buttons()
 
-    buttonViewATableImage = PhotoImage(
-        file=relative_to_assets("buttonViewATable.png"))
-    buttonViewATable = Button(
-        image=buttonViewATableImage,
-        borderwidth=0,
-        highlightthickness=0,
-        command=ButtonViewATablePressed,
-        relief="flat"
-    )
-    buttonViewATable.place(
-        x=103.0,
-        y=114.0,
-        width=146.0,
-        height=86.0
-    )
-    homeWindow.resizable(False, False)
-    homeWindow.mainloop()
+        self.window.resizable(False, False)
+        self.window.mainloop()
 
-def loadViewWindow():
+    def relative_to_assets(self, path: str) -> Path:
+        return Path(self.ASSETS_PATH) / Path(path)
 
-    ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'viewAssets')
+    def create_background(self):
+        self.canvas.create_rectangle(
+            0.0,
+            0.0,
+            1395.0,
+            784.0,
+            fill="#2F4B9F",
+            outline=""
+        )
 
-    def relative_to_assets(path: str) -> Path:
-        return ASSETS_PATH / Path(path)
+    def create_lines(self):
+        # Vertical and horizontal lines
+        lines = [
+            (146.0, 127.0, 147.0, 772.0),
+            (383.0, 127.0, 384.0, 772.0),
+            (1339.0, 123.0, 1340.0, 174.0),
+            (671.0, 123.0, 672.0, 174.0),
+            (173.0, 178.0, 378.0, 179.0),
+            (397.0, 178.0, 1369.0, 179.0),
+            (23.0, 115.0, 1365.0, 116.0),
+            (398.0, 193.0, 1365.0, 688.0),
+            (174.0, 193.0, 363.0, 408.0)
+        ]
+        for x1, y1, x2, y2 in lines:
+            self.canvas.create_rectangle(
+                x1, y1, x2, y2,
+                fill="#FFFFFF",
+                outline=""
+            )
 
+    def create_text(self):
+        # Text elements
+        texts = [
+            (24.0, 41.0, "Hazard Record Database - View", 36),
+            (174.0, 149.0, "Table Selector", 20),
+            (399.0, 144.0, "Table Viewport", 20),
+            (677.0, 144.0, "Active Table:", 20),
+            (817.0, 144.0, "Table_name", 20)
+        ]
+        for x, y, text, size in texts:
+            self.canvas.create_text(
+                x, y,
+                anchor="nw",
+                text=text,
+                fill="#FFFFFF",
+                font=("Kodchasan Bold", size * -1)
+            )
 
-    window = Tk()
+    def create_images(self):
+        # Logo image
+        self.image_logo = PhotoImage(
+            file=self.relative_to_assets("logo.png")
+        )
+        self.canvas.create_image(
+            1295.0,
+            734.0,
+            image=self.image_logo
+        )
 
-    window.geometry("1395x784")
-    window.configure(bg = "#FFFFFF")
+    def create_buttons(self):
+        # Button images and setup
+        self.button_home_image = PhotoImage(file=self.relative_to_assets("buttonHome.png"))
+        self.button_2_image = PhotoImage(file=self.relative_to_assets("button_2.png"))
+        self.button_3_image = PhotoImage(file=self.relative_to_assets("button_3.png"))
+        self.button_4_image = PhotoImage(file=self.relative_to_assets("button_4.png"))
+        self.button_5_image = PhotoImage(file=self.relative_to_assets("button_5.png"))
 
+        # Button creation with commands and images
+        buttonHome = Button(
+            image=self.button_home_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("buttonHome clicked"),
+            relief="flat"
+        )
+        buttonHome.place(x=26.0, y=718.0, width=109.0, height=32.0)
 
-    canvas = Canvas(
-        window,
-        bg = "#FFFFFF",
-        height = 784,
-        width = 1395,
-        bd = 0,
-        highlightthickness = 0,
-        relief = "ridge"
-    )
+        button_2 = Button(
+            image=self.button_2_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_2 clicked"),
+            relief="flat"
+        )
+        button_2.place(x=220, y=418.0, width=109.0, height=32.0)
 
-    canvas.place(x = 0, y = 0)
-    canvas.create_rectangle(
-        0.0,
-        0.0,
-        1395.0,
-        784.0,
-        fill="#2F4B9F",
-        outline="")
+        button_3 = Button(
+            image=self.button_3_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_3 clicked"),
+            relief="flat"
+        )
+        button_3.place(x=24.0, y=246.0, width=109.0, height=32.0)
 
-    image_image_1 = PhotoImage(
-        file=relative_to_assets("image_1.png"))
-    image_1 = canvas.create_image(
-        1295.0,
-        734.0,
-        image=image_image_1
-    )
+        button_4 = Button(
+            image=self.button_4_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_4 clicked"),
+            relief="flat"
+        )
+        button_4.place(x=24.0, y=192.0, width=109.0, height=32.0)
 
-    canvas.create_text(
-        24.0,
-        41.0,
-        anchor="nw",
-        text="Hazard Record Database - View",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 36 * -1)
-    )
-
-    canvas.create_text(
-        174.0,
-        149.0,
-        anchor="nw",
-        text="Table Selector",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 20 * -1)
-    )
-
-    canvas.create_text(
-        399.0,
-        144.0,
-        anchor="nw",
-        text="Table Viewport",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 20 * -1)
-    )
-
-    canvas.create_text(
-        677.0,
-        144.0,
-        anchor="nw",
-        text="Active Table:",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 20 * -1)
-    )
-
-    canvas.create_text(
-        817.0,
-        144.0,
-        anchor="nw",
-        text="Table_name",
-        fill="#FFFFFF",
-        font=("Kodchasan Bold", 20 * -1)
-    )
-
-    canvas.create_rectangle(
-        146.99997184986591,
-        127.0,
-        148.0,
-        772.0,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        383.00000236744404,
-        127.0,
-        384.0000305175781,
-        772.0,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        173.0,
-        178.0,
-        378.0,
-        179.00000000000003,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        397.0,
-        178.0,
-        1369.0,
-        179.0000000000001,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        23.0,
-        115.0,
-        1365.0,
-        116.0,
-        fill="#FFFFFF",
-        outline="")
-
-    button_image_1 = PhotoImage(
-        file=relative_to_assets("button_1.png"))
-    button_1 = Button(
-        image=button_image_1,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_1 clicked"),
-        relief="flat"
-    )
-    button_1.place(
-        x=26.0,
-        y=718.0,
-        width=109.26072692871094,
-        height=32.340213775634766
-    )
-
-    button_image_2 = PhotoImage(
-        file=relative_to_assets("button_2.png"))
-    button_2 = Button(
-        image=button_image_2,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_2 clicked"),
-        relief="flat"
-    )
-    button_2.place(
-        x=220,
-        y=418.0,
-        width=109.26072692871094,
-        height=32.340213775634766
-    )
-
-    button_image_3 = PhotoImage(
-        file=relative_to_assets("button_3.png"))
-    button_3 = Button(
-        image=button_image_3,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_3 clicked"),
-        relief="flat"
-    )
-    button_3.place(
-        x=24.0,
-        y=246.0,
-        width=109.26072692871094,
-        height=32.340213775634766
-    )
-
-    button_image_4 = PhotoImage(
-        file=relative_to_assets("button_4.png"))
-    button_4 = Button(
-        image=button_image_4,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_4 clicked"),
-        relief="flat"
-    )
-    button_4.place(
-        x=24.0,
-        y=192.79013061523438,
-        width=109.26072692871094,
-        height=32.340213775634766
-    )
-
-    button_image_5 = PhotoImage(
-        file=relative_to_assets("button_5.png"))
-    button_5 = Button(
-        image=button_image_5,
-        borderwidth=0,
-        highlightthickness=0,
-        command=lambda: print("button_5 clicked"),
-        relief="flat"
-    )
-    button_5.place(
-        x=24.0,
-        y=140.0,
-        width=109.392333984375,
-        height=32.340213775634766
-    )
-
-    canvas.create_rectangle(
-        398.0,
-        193.0,
-        1365.0,
-        688.0,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        174.0,
-        193.0,
-        363.0,
-        408.0,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        1339.0,
-        123.0,
-        1340.0000021855694,
-        174.0,
-        fill="#FFFFFF",
-        outline="")
-
-    canvas.create_rectangle(
-        671.0,
-        123.0,
-        672.0000021855697,
-        174.0,
-        fill="#FFFFFF",
-        outline="")
-    #window.resizable(False, False)
-    window.mainloop()
-
-
-#comment these out when working on different screens
-LoadLogIn()
-#LoadHomeWindow()
-#CreateHomeScreen()
-#loadViewWindow()
-
-# Close the database when GUI is closed
-closeDB()
+        button_5 = Button(
+            image=self.button_5_image,
+            borderwidth=0,
+            highlightthickness=0,
+            command=lambda: print("button_5 clicked"),
+            relief="flat"
+        )
+        button_5.place(x=24.0, y=140.0, width=109.0, height=32.0)
