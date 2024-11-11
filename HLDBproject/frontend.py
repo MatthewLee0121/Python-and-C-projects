@@ -362,7 +362,7 @@ def LoadHomeWindow():
         image=buttonViewATableImage,
         borderwidth=0,
         highlightthickness=0,
-        command=ButtonViewATablePressed(),
+        command=ButtonViewATablePressed,
         relief="flat"
     )
     buttonViewATable.place(
@@ -611,7 +611,7 @@ def loadViewWindow():
         174.0,
         fill="#FFFFFF",
         outline="")
-    window.resizable(False, False)
+    #window.resizable(False, False)
     window.mainloop()
 
 
