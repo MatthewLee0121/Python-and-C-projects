@@ -1,0 +1,5 @@
+#Fuction to check if power of two
+def power_of_two(num):
+    return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
+
+print(power_of_two(5))

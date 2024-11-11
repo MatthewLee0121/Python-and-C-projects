@@ -1,3 +1,7 @@
+import os
+import sys
+import time
+
 print("hello")
 
 def hello_world():
@@ -57,3 +61,14 @@ def password_generator(first_name, last_name):
 
 temp_password = password_generator(first_name, last_name)
 print(temp_password)
+
+
+current_directory = os.path.dirname(os.path.abspath(__file__))
+print("Current directory:", current_directory)
+
+def typing(new_print, delay = 0.07):
+    for c in new_print:
+        sys.stdout.write(c)
+        sys.stdout.flush()
+        time.sleep(delay)
+    return ""
