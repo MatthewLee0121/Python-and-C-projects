@@ -65,4 +65,3 @@ print(datadf)
 datadf['Salary'] = [50000, 60000, 70000, 0]
 datadf['Age'] = datadf['Age'] + 1
 print(datadf)
-
