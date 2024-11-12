@@ -158,7 +158,7 @@ def CreateHomeScreen():
         name = entry_name.get()
         age = entry_age.get()
 
-        table_name = get_dropdown_value()
+        table_name = getDropdownValue()
         add2Test(table_name, test_id, name, age)
 
         entry_test_id.delete(0, tk.END)
@@ -168,7 +168,7 @@ def CreateHomeScreen():
     # Function to view the selected table
     def on_view_table():
         # Get the selected table from the dropdown
-        table_name = get_dropdown_value()
+        table_name = getDropdownValue()
 
         # Fetch rows from the selected table and update the listbox
         rows = viewDBTable(table_name)
@@ -221,7 +221,7 @@ def CreateHomeScreen():
     table_dropdown = tk.OptionMenu(root, selected_table, *table_names)
     table_dropdown.grid(row=3, column=1)
 
-    def get_dropdown_value():
+    def getDropdownValue():
         return selected_table.get()
 
     root.mainloop()

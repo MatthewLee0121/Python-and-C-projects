@@ -10,7 +10,7 @@ class LogInWindow:
 
         backend.InitiateUNPWTable()
 
-        # Create the main window
+        # Create the main ViewWindow
         self.logInWindow = Tk()
         self.logInWindow.geometry("650x400")
         self.logInWindow.configure(bg="#2F4B9F")
@@ -254,13 +254,13 @@ class HomeWindow:
 class ViewWindow:
     def __init__(self):
         self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'viewAssets')
-        self.window = Tk()
-        self.window.geometry("1395x784")
-        self.window.configure(bg="#FFFFFF")
+        self.ViewWindow = Tk()
+        self.ViewWindow.geometry("1395x784")
+        self.ViewWindow.configure(bg="#FFFFFF")
         
         # Create canvas
         self.canvas = Canvas(
-            self.window,
+            self.ViewWindow,
             bg="#FFFFFF",
             height=784,
             width=1395,
@@ -272,13 +272,14 @@ class ViewWindow:
         
         # Draw components
         self.create_background()
-        self.create_lines()
+        self.createLines()
         self.create_text()
         self.create_images()
         self.create_buttons()
+        self.createListBox()
 
-        self.window.resizable(False, False)
-        self.window.mainloop()
+        self.ViewWindow.resizable(False, False)
+        self.ViewWindow.mainloop()
 
     def relative_to_assets(self, path: str) -> Path:
         return Path(self.ASSETS_PATH) / Path(path)
@@ -293,7 +294,7 @@ class ViewWindow:
             outline=""
         )
 
-    def create_lines(self):
+    def createLines(self):
         # Vertical and horizontal lines
         lines = [
             (146.0, 127.0, 147.0, 772.0),
@@ -303,8 +304,6 @@ class ViewWindow:
             (173.0, 178.0, 378.0, 179.0),
             (397.0, 178.0, 1369.0, 179.0),
             (23.0, 115.0, 1365.0, 116.0),
-            (398.0, 193.0, 1365.0, 688.0),
-            (174.0, 193.0, 363.0, 408.0)
         ]
         for x1, y1, x2, y2 in lines:
             self.canvas.create_rectangle(
@@ -312,9 +311,44 @@ class ViewWindow:
                 fill="#FFFFFF",
                 outline=""
             )
+    
+    def createListBox(self):
+
+        listbox_specs = [
+        ('ViewTable', 398.0, 193.0, 967.0, 495.0),
+        ('TableName', 174.0, 193.0, 189.0, 215.0)
+        ]
+
+        for name, x1, y1, width, height in listbox_specs:
+            listbox = tk.Listbox(
+                self.ViewWindow,
+                bg="#FFFFFF",
+                font=("Kodchasan Regular", 12),
+                selectbackground="#C3CDE0"
+            )
+            setattr(self, f"{name}Listbox", listbox)
+            listbox.place(x=x1, y=y1, width=width, height=height)
+        
+        self.populateTableNameListBox()
+
+    def populateTableNameListBox(self):
+        table_names = backend.getTableNames()
+
+        self.TableNameListbox.delete(0, tk.END)
+
+        for table_name in table_names:
+            self.TableNameListbox.insert(tk.END, table_name)
+
+    def showTable(self):
+        self.ViewTableListbox.delete(0,tk.END)
+        selectedTableTuple = self.TableNameListbox.curselection()
+        selectedTable = self.TableNameListbox.get(selectedTableTuple[0])
+        rows = backend.viewDBTable(selectedTable)
+        for row in rows:
+            self.ViewTableListbox.insert(tk.END, f"column1: {row[0]} | column2: {row[1]} | column3: {row[2]}")
+        
 
     def create_text(self):
-        # Text elements
         texts = [
             (24.0, 41.0, "Hazard Record Database - View", 36),
             (174.0, 149.0, "Table Selector", 20),
@@ -343,31 +377,29 @@ class ViewWindow:
         )
 
     def create_buttons(self):
-        # Button images and setup
-        self.button_home_image = PhotoImage(file=self.relative_to_assets("buttonHome.png"))
-        self.button_2_image = PhotoImage(file=self.relative_to_assets("button_2.png"))
+        self.buttonHomeImage = PhotoImage(file=self.relative_to_assets("buttonHome.png"))
+        self.buttonViewTableImage = PhotoImage(file=self.relative_to_assets("buttonViewTable.png"))
         self.button_3_image = PhotoImage(file=self.relative_to_assets("button_3.png"))
         self.button_4_image = PhotoImage(file=self.relative_to_assets("button_4.png"))
         self.button_5_image = PhotoImage(file=self.relative_to_assets("button_5.png"))
 
-        # Button creation with commands and images
         buttonHome = Button(
-            image=self.button_home_image,
+            image=self.buttonHomeImage,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("buttonHome clicked"),
+            command=self.Button_home_pressed,
             relief="flat"
         )
         buttonHome.place(x=26.0, y=718.0, width=109.0, height=32.0)
 
-        button_2 = Button(
-            image=self.button_2_image,
+        buttonViewTable = Button(
+            image=self.buttonViewTableImage,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_2 clicked"),
+            command=self.showTable,
             relief="flat"
         )
-        button_2.place(x=220, y=418.0, width=109.0, height=32.0)
+        buttonViewTable.place(x=220, y=418.0, width=109.0, height=32.0)
 
         button_3 = Button(
             image=self.button_3_image,
@@ -385,7 +417,7 @@ class ViewWindow:
             command=lambda: print("button_4 clicked"),
             relief="flat"
         )
-        button_4.place(x=24.0, y=192.0, width=109.0, height=32.0)
+        button_4.place(x=24.0, y=192.0, width=109.0, height=32.0) 
 
         button_5 = Button(
             image=self.button_5_image,
@@ -396,5 +428,12 @@ class ViewWindow:
         )
         button_5.place(x=24.0, y=140.0, width=109.0, height=32.0)
 
+    def Button_home_pressed(self):
+        self.ViewWindow.destroy()
+        HomeWindow()
+
+
 if __name__ == "__main__":
     LogInWindow()
+    #HomeWindow()
+    #ViewWindow()

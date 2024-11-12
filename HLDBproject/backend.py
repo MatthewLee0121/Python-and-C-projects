@@ -88,7 +88,7 @@ def add2Test(table_name, test_id, name, age):
     else:
         msgbx.showerror('Error', 'Please enter input in all fields')
 
-def get_table_names():
+def getTableNames():
     cursor = conn.cursor()
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = [table[0] for table in cursor.fetchall()]
