@@ -41,7 +41,6 @@ def InitiateUNPWTable():
         )
     """)
     conn.commit()
-    insert_user("testuser", "securepassword123")
 
 #function to add to usernames and passwords table
 def insert_user(username: str, password: str):

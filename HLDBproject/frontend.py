@@ -278,7 +278,7 @@ class ViewWindow:
         self.create_buttons()
         self.createListBox()
 
-        self.ViewWindow.resizable(False, False)
+        #self.ViewWindow.resizable(False, False)
         self.ViewWindow.mainloop()
 
     def relative_to_assets(self, path: str) -> Path:
@@ -337,7 +337,12 @@ class ViewWindow:
         self.TableNameListbox.delete(0, tk.END)
 
         for table_name in table_names:
-            self.TableNameListbox.insert(tk.END, table_name)
+            if table_name == 'users':
+                pass
+            elif table_name == 'sqlite_sequence':
+                pass
+            else:
+                self.TableNameListbox.insert(tk.END, table_name)
 
     def showTable(self):
         self.ViewTableListbox.delete(0,tk.END)
@@ -378,9 +383,9 @@ class ViewWindow:
     def create_buttons(self):
         self.buttonHomeImage = PhotoImage(file=self.relative_to_assets("buttonHome.png"))
         self.buttonViewTableImage = PhotoImage(file=self.relative_to_assets("buttonViewTable.png"))
-        self.button_3_image = PhotoImage(file=self.relative_to_assets("button_3.png"))
-        self.button_4_image = PhotoImage(file=self.relative_to_assets("button_4.png"))
-        self.button_5_image = PhotoImage(file=self.relative_to_assets("button_5.png"))
+        self.buttonDeleteTableImage = PhotoImage(file=self.relative_to_assets("buttonDeleteTable.png"))
+        self.buttonChangeTableImage = PhotoImage(file=self.relative_to_assets("buttonChangeTable.png"))
+        self.buttonAddTableImage = PhotoImage(file=self.relative_to_assets("buttonAddTable.png"))
 
         buttonHome = Button(
             image=self.buttonHomeImage,
@@ -400,32 +405,32 @@ class ViewWindow:
         )
         buttonViewTable.place(x=220, y=418.0, width=109.0, height=32.0)
 
-        button_3 = Button(
-            image=self.button_3_image,
+        buttonDeleteTable = Button(
+            image=self.buttonDeleteTableImage,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_3 clicked"),
+            command=lambda: print("buttonDeleteTable clicked"),
             relief="flat"
         )
-        button_3.place(x=24.0, y=246.0, width=109.0, height=32.0)
+        buttonDeleteTable.place(x=24.0, y=246.0, width=109.0, height=32.0)
 
-        button_4 = Button(
-            image=self.button_4_image,
+        buttonChangeATable = Button(
+            image=self.buttonChangeTableImage,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_4 clicked"),
+            command=lambda: print("buttonChangeATable clicked"),
             relief="flat"
         )
-        button_4.place(x=24.0, y=192.0, width=109.0, height=32.0) 
+        buttonChangeATable.place(x=24.0, y=192.0, width=109.0, height=32.0) 
 
-        button_5 = Button(
-            image=self.button_5_image,
+        buttonAddTable = Button(
+            image=self.buttonAddTableImage,
             borderwidth=0,
             highlightthickness=0,
-            command=lambda: print("button_5 clicked"),
+            command=lambda: print("buttonAddTable clicked"),
             relief="flat"
         )
-        button_5.place(x=24.0, y=140.0, width=109.0, height=32.0)
+        buttonAddTable.place(x=24.0, y=140.0, width=109.0, height=32.0)
 
     def Button_home_pressed(self):
         self.ViewWindow.destroy()
