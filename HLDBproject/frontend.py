@@ -345,8 +345,7 @@ class ViewWindow:
         selectedTable = self.TableNameListbox.get(selectedTableTuple[0])
         rows = backend.viewDBTable(selectedTable)
         for row in rows:
-            self.ViewTableListbox.insert(tk.END, f"column1: {row[0]} | column2: {row[1]} | column3: {row[2]}")
-        
+            self.ViewTableListbox.insert(tk.END, f"column1: {row[0]} | column2: {row[1]} | column3: {row[2]}")      
 
     def create_text(self):
         texts = [
@@ -434,6 +433,6 @@ class ViewWindow:
 
 
 if __name__ == "__main__":
-    LogInWindow()
+    #LogInWindow()
     #HomeWindow()
-    #ViewWindow()
+    ViewWindow()
