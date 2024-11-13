@@ -1,6 +1,6 @@
-import tkinter as tk
 from pathlib import Path
-from tkinter import Tk, Canvas, Entry, Text, Button, PhotoImage, messagebox as msg
+import tkinter as tk
+from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox as msg
 import backend
 import os
 
@@ -131,8 +131,6 @@ class LogInWindow:
             relief="flat"
         )
         self.loginButton.place(x=283.0, y=251.0, width=100.0, height=25.0)
-
-
 class HomeWindow:
     def __init__(self,):
         self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'homeAssets')
@@ -345,12 +343,22 @@ class ViewWindow:
                 self.TableNameListbox.insert(tk.END, table_name)
 
     def showTable(self):
+
         self.ViewTableListbox.delete(0,tk.END)
         selectedTableTuple = self.TableNameListbox.curselection()
         selectedTable = self.TableNameListbox.get(selectedTableTuple[0])
+        self.canvas.itemconfig(self.tableNameTextBox, text=str(selectedTable))
+
         rows = backend.viewDBTable(selectedTable)
+        columns = backend.getTableColumnNames(selectedTable)
+
+        header = " | ".join(f"{col}:" for col in columns)
+        self.ViewTableListbox.insert(tk.END, header)
+        self.ViewTableListbox.insert(tk.END, "-" * len(header))
+
         for row in rows:
-            self.ViewTableListbox.insert(tk.END, f"column1: {row[0]} | column2: {row[1]} | column3: {row[2]}")      
+            row_text = " | ".join(f"{columns[i]}: {row[i]}" for i in range(len(columns)))
+            self.ViewTableListbox.insert(tk.END, row_text)
 
     def create_text(self):
         texts = [
@@ -358,8 +366,9 @@ class ViewWindow:
             (174.0, 149.0, "Table Selector", 20),
             (399.0, 144.0, "Table Viewport", 20),
             (677.0, 144.0, "Active Table:", 20),
-            (817.0, 144.0, "Table_name", 20)
         ]
+
+
         for x, y, text, size in texts:
             self.canvas.create_text(
                 x, y,
@@ -368,6 +377,15 @@ class ViewWindow:
                 fill="#FFFFFF",
                 font=("Kodchasan Bold", size * -1)
             )
+
+        self.tableNameTextBox = self.canvas.create_text(
+                817.0,
+                144.0,
+                anchor="nw",
+                text= "No Table Selected.",
+                fill="#FFFFFF",
+                font=("Kodchasan Bold", size * -1)
+        )
 
     def create_images(self):
         # Logo image
@@ -436,8 +454,7 @@ class ViewWindow:
         self.ViewWindow.destroy()
         HomeWindow()
 
-
-if __name__ == "__main__":
-    #LogInWindow()
+if __name__ == "__main__": 
+    LogInWindow()
     #HomeWindow()
-    ViewWindow()
+    #ViewWindow()

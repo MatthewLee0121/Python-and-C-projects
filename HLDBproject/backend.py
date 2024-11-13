@@ -1,6 +1,6 @@
 import sqlite3
 import os
-from tkinter import messagebox as msgbx
+from tkinter import messagebox as msg
 import hashlib
 
 # Set up the database connection
@@ -83,15 +83,21 @@ def add2Test(table_name, test_id, name, age):
         query = f"INSERT INTO {table_name} (test_id, name, age) VALUES (?, ?, ?)"
         cursor.execute(query, (test_id, name, age))
         conn.commit()
-        msgbx.showinfo("Success", "Test added successfully")
+        msg.showinfo("Success", "Test added successfully")
     else:
-        msgbx.showerror('Error', 'Please enter input in all fields')
+        msg.showerror('Error', 'Please enter input in all fields')
 
 def getTableNames():
     cursor = conn.cursor()
     cursor.execute("SELECT name FROM sqlite_master WHERE type='table';")
     tables = [table[0] for table in cursor.fetchall()]
     return tables
+
+def getTableColumnNames(table_name):
+    cursor = conn.cursor()
+    cursor.execute(f"PRAGMA table_info({table_name})")
+    columns = [col[1] for col in cursor.fetchall()]
+    return columns
 
 # Close the database connection when done
 def closeDB():
