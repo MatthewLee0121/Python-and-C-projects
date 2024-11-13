@@ -131,6 +131,7 @@ class LogInWindow:
             relief="flat"
         )
         self.loginButton.place(x=283.0, y=251.0, width=100.0, height=25.0)
+
 class HomeWindow:
     def __init__(self,):
         self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'homeAssets')
@@ -255,7 +256,8 @@ class ViewWindow:
         self.ViewWindow = Tk()
         self.ViewWindow.geometry("1395x784")
         self.ViewWindow.configure(bg="#FFFFFF")
-        
+        #self.ViewWindow.title = ('Hazard Record Database - View Page')# why does this no work.
+
         # Create canvas
         self.canvas = Canvas(
             self.ViewWindow,
@@ -352,7 +354,7 @@ class ViewWindow:
         rows = backend.viewDBTable(selectedTable)
         columns = backend.getTableColumnNames(selectedTable)
 
-        header = " | ".join(f"{col}:" for col in columns)
+        header = " | ".join(f"{col}" for col in columns)
         self.ViewTableListbox.insert(tk.END, header)
         self.ViewTableListbox.insert(tk.END, "-" * len(header))
 
@@ -367,7 +369,6 @@ class ViewWindow:
             (399.0, 144.0, "Table Viewport", 20),
             (677.0, 144.0, "Active Table:", 20),
         ]
-
 
         for x, y, text, size in texts:
             self.canvas.create_text(
@@ -455,6 +456,6 @@ class ViewWindow:
         HomeWindow()
 
 if __name__ == "__main__": 
-    LogInWindow()
-    #HomeWindow()
+    #LogInWindow()
+    HomeWindow()
     #ViewWindow()
