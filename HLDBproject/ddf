@@ -1,62 +1,101 @@
 import sqlite3
-import random
-from faker import Faker
 import os
 
-# Initialize Faker and the SQLite connection
-fake = Faker()
-# Set up the database connection
+# Set up the database path
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'HLDB.db')
 conn = sqlite3.connect(db_path)
 
+# Create a cursor object
 cursor = conn.cursor()
 
-# Define some possible column types
-column_types = ["TEXT", "INTEGER", "REAL"]
+# Drop tables if they exist
+cursor.execute("""
+            CREATE TABLE Identification_Focus (
+            HAZID_ID VARCHAR(255) PRIMARY KEY,
+            Hazard_Origin VARCHAR(255),
+            Location_Area VARCHAR(255),
+            Subject VARCHAR(255),
+            Configuration_State VARCHAR(255),
+            Operating_Mode VARCHAR(255)
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Hazard_Cause_Consequence_Assessment (
+            Core_Hazard VARCHAR(255),
+            Boundary_Hazard VARCHAR(255),
+            Description VARCHAR(255),
+            Cause VARCHAR(255),
+            Consequence VARCHAR(255),
+            Risk_Broadly_Acceptable BOOLEAN,
+            Hazard_Ranking_Pre_Controls INT
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Risk_Acceptance_Principle (
+            Code_Of_Practice_YN BOOLEAN,
+            Reference_System_YN BOOLEAN,
+            Explicit_Risk_Estimation_YN BOOLEAN
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Applicability_Analysis (
+            Applicability_Analysis VARCHAR(255),
+            Applicability_Justification VARCHAR(255),
+            Notes TEXT
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Apportionment_Lead_Review (
+            Lead_Name VARCHAR(255),
+            Comments_Date DATE,
+            Hazard_Response_Comments TEXT
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Safety_Measures_Requirements (
+            Safety_Measure VARCHAR(255),
+            DR_SoS_Traceability VARCHAR(255),
+            Apportionment_Category_ID VARCHAR(255),
+            Requirement_Document_Source VARCHAR(255),
+            Requirement_Clause_Reference VARCHAR(255),
+            Hazard_Ranking_Post_Controls INT
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Status (
+            Safety_Measure_Status VARCHAR(255),
+            Hazard_Status VARCHAR(255)
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Apportionment (
+            Single_Entity_Hazard BOOLEAN,
+            Apportionment_Lead VARCHAR(255),
+            Operational_Scenario VARCHAR(255),
+            Normal_Activity BOOLEAN
+        );
+        """)
+cursor.execute("""
+        CREATE TABLE Subset_113_Mitigation (
+            Proposed_Mitigation VARCHAR(255),
+            B3MR2_Trackside_Applicable BOOLEAN,
+            B3MR1_Onboard_Applicable BOOLEAN,
+            B3MR2_Onboard_Applicable BOOLEAN,
+            Applicable_To_ECDP_T2 BOOLEAN,
+            Rationale_Not_Applicable TEXT,
+            Requirement_Suite VARCHAR(255),
+            Amendment_Needed BOOLEAN,
+            Initial_Notes TEXT,
+            Action_Required BOOLEAN,
+            Assessment_Of_Risk VARCHAR(255),
+            ERA_UCR_No VARCHAR(255),
+            Hazard_Response_Comments TEXT,
+            UCR_No_Info TEXT,
+            Additional_Notes TEXT
+        );
+    """)
 
-# Function to generate random column names and types
-def generate_columns():
-    num_columns = random.randint(3, 6)  # 3 to 6 columns per table
-    columns = {}
-    for i in range(num_columns):
-        column_name = f"column_{i+1}"
-        column_type = random.choice(column_types)
-        columns[column_name] = column_type
-    return columns
-
-# Function to generate random data for a row
-def generate_row(columns):
-    row = []
-    for column_type in columns.values():
-        if column_type == "TEXT":
-            row.append(f"'{fake.word()}'")
-        elif column_type == "INTEGER":
-            row.append(str(random.randint(1, 1000)))
-        elif column_type == "REAL":
-            row.append(str(round(random.uniform(1, 1000), 2)))
-    return row
-
-# Create 10 tables with random data
-for table_num in range(10):
-    # Generate a random table name
-    table_name = f"table_{table_num+1}"
-    
-    # Generate random columns
-    columns = generate_columns()
-    
-    # Create the table SQL statement
-    columns_sql = ", ".join(f"{name} {col_type}" for name, col_type in columns.items())
-    create_table_sql = f"CREATE TABLE IF NOT EXISTS {table_name} ({columns_sql});"
-    cursor.execute(create_table_sql)
-    
-    # Insert more than 20 rows of random data
-    for _ in range(25):  # 25 rows per table
-        row_data = generate_row(columns)
-        insert_sql = f"INSERT INTO {table_name} VALUES ({', '.join(row_data)});"
-        cursor.execute(insert_sql)
 
 # Commit the changes and close the connection
 conn.commit()
 conn.close()
-
-print("10 random tables with random data have been created.")

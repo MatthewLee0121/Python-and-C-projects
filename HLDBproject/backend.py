@@ -99,6 +99,14 @@ def getTableColumnNames(table_name):
     columns = [col[1] for col in cursor.fetchall()]
     return columns
 
+def swapUnderToSpace(text):
+    text = text.replace("_", " ")
+    return text
+
+def swapSpaceToUnder(text):
+    text = text.replace(" ", "_")
+    return text
+
 # Close the database connection when done
 def closeDB():
     conn.close()
