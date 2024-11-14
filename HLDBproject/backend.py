@@ -3,7 +3,7 @@ import os
 from tkinter import messagebox as msg
 import hashlib
 
-# Set up the database connection
+# Set up the database connection (global variables might fix this later to not be a global but will develop the programme more)
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'HLDB.db')
 conn = sqlite3.connect(db_path)
 

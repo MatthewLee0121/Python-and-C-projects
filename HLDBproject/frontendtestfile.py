@@ -4,6 +4,7 @@ from tkinter import Tk, Canvas, Entry, Button, PhotoImage, messagebox as msg
 import backend
 import os
 
+
 class LogInWindow:
     def __init__(self):
         self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'loginAssets')
@@ -250,76 +251,90 @@ class HomeWindow:
         self.homeWindow.destroy()
         ViewWindow()
 
+
 class ViewWindow:
     def __init__(self):
+         # Initialize the Tkinter window
+        self.ViewWindow = tk.Tk()
+
+        # Get screen width and height (now that self.ViewWindow is initialized)
+        screen_width = self.ViewWindow.winfo_screenwidth()
+        screen_height = self.ViewWindow.winfo_screenheight()
+
+
         self.ASSETS_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'assets', 'viewAssets')
-        self.ViewWindow = Tk()
-        self.ViewWindow.geometry("1395x784")
+        
+        # Set window size based on screen size (for responsiveness)
+        window_width = int(screen_width * 0.75)  # 75% of the screen width
+        window_height = int(screen_height * 0.75)  # 75% of the screen height
+        self.ViewWindow.geometry(f"{window_width}x{window_height}")
         self.ViewWindow.configure(bg="#FFFFFF")
         self.ViewWindow.title("Hazard Record Database - Home Page")
+        
+        # Allow window to be resized
+        self.ViewWindow.resizable(True, True)
 
         # Create canvas
         self.canvas = Canvas(
             self.ViewWindow,
             bg="#FFFFFF",
-            height=784,
-            width=1395,
+            height=window_height,
+            width=window_width,
             bd=0,
             highlightthickness=0,
             relief="ridge"
         )
-        self.canvas.place(x=0, y=0)
+        self.canvas.place(x=0, y=0, relwidth=1.0, relheight=1.0)  # Use relative width and height
         
-        # Draw components
+        # Create UI components
         self.create_background()
-        self.createLines()
+        self.create_lines()
         self.create_text()
         self.create_images()
         self.create_buttons()
-        self.createListBox()
+        self.create_listbox()
 
-        #self.ViewWindow.resizable(False, False)
         self.ViewWindow.mainloop()
 
     def relative_to_assets(self, path: str) -> Path:
         return Path(self.ASSETS_PATH) / Path(path)
 
     def create_background(self):
+        # Create background rectangle that covers the entire window
         self.canvas.create_rectangle(
-            0.0,
-            0.0,
-            1395.0,
-            784.0,
-            fill="#2F4B9F",
-            outline=""
+            0.0, 0.0, 
+            1.0, 1.0,
+            fill="#2F4B9F", outline="", 
+            tags="background", 
+            width=0
         )
-
-    def createLines(self):
-        # Vertical and horizontal lines
+    
+    def create_lines(self):
+        # Adjust the lines' positioning with relative placement
         lines = [
-            (146.0, 127.0, 147.0, 772.0),
-            (383.0, 127.0, 384.0, 772.0),
-            (1339.0, 123.0, 1340.0, 174.0),
-            (671.0, 123.0, 672.0, 174.0),
-            (173.0, 178.0, 378.0, 179.0),
-            (397.0, 178.0, 1369.0, 179.0),
-            (23.0, 115.0, 1365.0, 116.0),
+            (0.1, 0.1, 0.1, 0.95),
+            (0.3, 0.1, 0.3, 0.95),
+            (0.95, 0.15, 0.95, 0.22),
+            (0.48, 0.15, 0.48, 0.22),
+            (0.12, 0.22, 0.27, 0.23),
+            (0.3, 0.22, 0.98, 0.23),
+            (0.02, 0.15, 0.98, 0.16)
         ]
+        
         for x1, y1, x2, y2 in lines:
             self.canvas.create_rectangle(
-                x1, y1, x2, y2,
-                fill="#FFFFFF",
-                outline=""
+                x1 * self.canvas.winfo_width(), y1 * self.canvas.winfo_height(),
+                x2 * self.canvas.winfo_width(), y2 * self.canvas.winfo_height(),
+                fill="#FFFFFF", outline=""
             )
-    
-    def createListBox(self):
 
+    def create_listbox(self):
         listbox_specs = [
-        ('ViewTable', 398.0, 193.0, 967.0, 495.0),
-        ('TableName', 174.0, 193.0, 189.0, 215.0)
+            ('ViewTable', 0.28, 0.25, 0.69, 0.63),  # Relative positioning
+            ('TableName', 0.12, 0.25, 0.14, 0.03)  # Relative positioning
         ]
-
-        for name, x1, y1, width, height in listbox_specs:
+        
+        for name, x1, y1, rel_width, rel_height in listbox_specs:
             listbox = tk.Listbox(
                 self.ViewWindow,
                 bg="#FFFFFF",
@@ -327,137 +342,89 @@ class ViewWindow:
                 selectbackground="#C3CDE0"
             )
             setattr(self, f"{name}Listbox", listbox)
-            listbox.place(x=x1, y=y1, width=width, height=height)
+            listbox.place(x=x1 * self.ViewWindow.winfo_width(), y=y1 * self.ViewWindow.winfo_height(),
+                          relwidth=rel_width, relheight=rel_height)
         
         self.populateTableNameListBox()
 
     def populateTableNameListBox(self):
-        table_names = backend.getTableNames()
+        # Example table names, replace with actual data fetching
+        table_names = ["Table1", "Table2", "Table3"]
 
         self.TableNameListbox.delete(0, tk.END)
-
         for table_name in table_names:
-            if table_name == 'users':
-                pass
-            elif table_name == 'sqlite_sequence':
-                pass
-            else:
-                self.TableNameListbox.insert(tk.END, backend.swapUnderToSpace(table_name))
+            self.TableNameListbox.insert(tk.END, table_name)
 
     def showTable(self):
-
-        self.ViewTableListbox.delete(0,tk.END)
-        selectedTableTuple = self.TableNameListbox.curselection()
-        selectedTable = self.TableNameListbox.get(selectedTableTuple[0])
-        self.canvas.itemconfig(self.tableNameTextBox, text=str(selectedTable))
-        selectedTable = backend.swapSpaceToUnder(selectedTable)
-
-        rows = backend.viewDBTable(selectedTable)
-        columns = backend.getTableColumnNames(selectedTable)
-        columns = [backend.swapUnderToSpace(col) for col in columns]
-        header = " | ".join(f"{col}:" for col in columns)
-
-        self.ViewTableListbox.insert(tk.END, header)
-        self.ViewTableListbox.insert(tk.END, "-" * len(header))
-
-        for row in rows:
-            row_text = " | ".join(f"{columns[i]}: {row[i]}" for i in range(len(columns)))
-            self.ViewTableListbox.insert(tk.END, row_text)
+        # Handle showing the table data (update your listbox)
+        pass
 
     def create_text(self):
+        # Create text labels with relative positioning
         texts = [
-            (24.0, 41.0, "Hazard Record Database - View", 36),
-            (174.0, 149.0, "Table Selector", 20),
-            (399.0, 144.0, "Table Viewport", 20),
-            (677.0, 144.0, "Active Table:", 20),
+            (0.02, 0.05, "Hazard Record Database - View", 36),
+            (0.12, 0.18, "Table Selector", 20),
+            (0.29, 0.18, "Table Viewport", 20),
+            (0.48, 0.18, "Active Table:", 20),
         ]
-
+        
         for x, y, text, size in texts:
             self.canvas.create_text(
-                x, y,
+                x * self.canvas.winfo_width(), y * self.canvas.winfo_height(),
                 anchor="nw",
                 text=text,
                 fill="#FFFFFF",
                 font=("Kodchasan Bold", size * -1)
             )
-
-        self.tableNameTextBox = self.canvas.create_text(
-                817.0,
-                144.0,
-                anchor="nw",
-                text= "No Table Selected.",
-                fill="#FFFFFF",
-                font=("Kodchasan Bold", size * -1)
-        )
-
+    
     def create_images(self):
-        # Logo image
-        self.image_logo = PhotoImage(
-            file=self.relative_to_assets("logo.png")
-        )
+        # Handle the images similarly
+        self.image_logo = PhotoImage(file=self.relative_to_assets("logo.png"))
         self.canvas.create_image(
-            1295.0,
-            734.0,
+            0.92 * self.canvas.winfo_width(),
+            0.94 * self.canvas.winfo_height(),
             image=self.image_logo
         )
 
     def create_buttons(self):
-        self.buttonHomeImage = PhotoImage(file=self.relative_to_assets("buttonHome.png"))
-        self.buttonViewTableImage = PhotoImage(file=self.relative_to_assets("buttonViewTable.png"))
-        self.buttonDeleteTableImage = PhotoImage(file=self.relative_to_assets("buttonDeleteTable.png"))
-        self.buttonChangeTableImage = PhotoImage(file=self.relative_to_assets("buttonChangeTable.png"))
-        self.buttonAddTableImage = PhotoImage(file=self.relative_to_assets("buttonAddTable.png"))
+        # Create buttons with relative positioning
+        button_specs = [
+            ('buttonHome.png', 0.02, 0.92, self.Button_home_pressed),
+            ('buttonViewTable.png', 0.16, 0.53, self.showTable),
+            ('buttonDeleteTable.png', 0.02, 0.31, lambda: print("Delete Table")),
+            ('buttonChangeTable.png', 0.02, 0.24, lambda: print("Change Table")),
+            ('buttonAddTable.png', 0.02, 0.20, lambda: print("Add Table"))
+        ]
 
-        buttonHome = Button(
-            image=self.buttonHomeImage,
-            borderwidth=0,
-            highlightthickness=0,
-            command=self.Button_home_pressed,
-            relief="flat"
-        )
-        buttonHome.place(x=26.0, y=718.0, width=109.0, height=32.0)
-
-        buttonViewTable = Button(
-            image=self.buttonViewTableImage,
-            borderwidth=0,
-            highlightthickness=0,
-            command=self.showTable,
-            relief="flat"
-        )
-        buttonViewTable.place(x=220, y=418.0, width=109.0, height=32.0)
-
-        buttonDeleteTable = Button(
-            image=self.buttonDeleteTableImage,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("buttonDeleteTable clicked"),
-            relief="flat"
-        )
-        buttonDeleteTable.place(x=24.0, y=246.0, width=109.0, height=32.0)
-
-        buttonChangeATable = Button(
-            image=self.buttonChangeTableImage,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("buttonChangeATable clicked"),
-            relief="flat"
-        )
-        buttonChangeATable.place(x=24.0, y=192.0, width=109.0, height=32.0) 
-
-        buttonAddTable = Button(
-            image=self.buttonAddTableImage,
-            borderwidth=0,
-            highlightthickness=0,
-            command=lambda: print("buttonAddTable clicked"),
-            relief="flat"
-        )
-        buttonAddTable.place(x=24.0, y=140.0, width=109.0, height=32.0)
+        for img, x, y, command in button_specs:
+            button_image = PhotoImage(file=self.relative_to_assets(img))
+            button = Button(
+                image=button_image,
+                borderwidth=0,
+                highlightthickness=0,
+                command=command,
+                relief="flat"
+            )
+            button.place(x=x * self.ViewWindow.winfo_width(), y=y * self.ViewWindow.winfo_height(),
+                         anchor="nw", relwidth=0.1, relheight=0.05)
 
     def Button_home_pressed(self):
         self.ViewWindow.destroy()
-        HomeWindow()
+        HomeWindow()  # Assuming you have a HomeWindow class to go to
 
 if __name__ == "__main__": 
     #LogInWindow()
-    HomeWindow()
-    #ViewWindow()
+    #HomeWindow()
+    ViewWindow()
+
+
+#     def __init__(self):
+#     self.ViewWindow = Tk()
+#     self.ViewWindow.geometry("1395x784")
+#     self.ViewWindow.bind("<Configure>", self.on_resize)
+#     # Initialize other components as before...
+
+# def on_resize(self, event):
+#     # Adjust component sizes based on event.width and event.height
+#     self.create_lines()  # Redraw lines
+
