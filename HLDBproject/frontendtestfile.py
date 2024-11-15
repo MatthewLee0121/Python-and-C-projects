@@ -306,7 +306,7 @@ class ViewWindow:
             1.0, 1.0,
             fill="#2F4B9F", outline="", 
             tags="background", 
-            width=0
+            width=1,
         )
     
     def create_lines(self):
@@ -427,4 +427,4 @@ if __name__ == "__main__":
 # def on_resize(self, event):
 #     # Adjust component sizes based on event.width and event.height
 #     self.create_lines()  # Redraw lines
-
+#https://stackoverflow.com/questions/41416788/python-resizing-widgets-when-window-is-resized-using-place-manager
