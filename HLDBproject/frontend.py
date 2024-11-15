@@ -354,6 +354,9 @@ class ViewWindow:
         selectedTable = backend.swapSpaceToUnder(selectedTable)
 
         rows = backend.viewDBTable(selectedTable)
+        rows = backend.viewDBTable(selectedTable)
+        columns = backend.getTableColumnNames(selectedTable)
+        print(columns)
         columns = backend.getTableColumnNames(selectedTable)
         columns = [backend.swapUnderToSpace(col) for col in columns]
         header = " | ".join(f"{col}:" for col in columns)
@@ -459,6 +462,6 @@ class ViewWindow:
         HomeWindow()
 
 if __name__ == "__main__": 
-    LogInWindow()
+    #LogInWindow()
     #HomeWindow()
-    #ViewWindow()
+    ViewWindow()
