@@ -211,7 +211,7 @@ def CreateHomeScreen():
     listbox_view_test.grid(row=0, column=11, columnspan=2, rowspan=6)
 
 
-    table_names = get_table_names()
+    table_names = getTableNames()
     selected_table = tk.StringVar(root)
     selected_table.set(str(table_names[0]))
 

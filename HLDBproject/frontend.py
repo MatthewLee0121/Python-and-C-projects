@@ -332,6 +332,7 @@ class ViewWindow:
         self.populateTableNameListBox()
 
     def populateTableNameListBox(self):
+        table_names = []
         table_names = backend.getTableNames()
 
         self.TableNameListbox.delete(0, tk.END)
@@ -458,6 +459,6 @@ class ViewWindow:
         HomeWindow()
 
 if __name__ == "__main__": 
-    #LogInWindow()
-    HomeWindow()
+    LogInWindow()
+    #HomeWindow()
     #ViewWindow()

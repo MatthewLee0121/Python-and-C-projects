@@ -10,21 +10,8 @@ conn = sqlite3.connect(db_path)
 # Function to initialize the test table
 def initialiseDB():
     cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS testtable (
-            test_id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS testtable2 (
-            test_id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL
-        )
-    ''')
     conn.commit()
+    return cursor
 
 #hash the password
 def hash_password(password: str) -> str:
