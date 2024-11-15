@@ -10,21 +10,8 @@ conn = sqlite3.connect(db_path)
 # Function to initialize the test table
 def initialiseDB():
     cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS testtable (
-            test_id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL
-        )
-    ''')
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS testtable2 (
-            test_id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            age INTEGER NOT NULL
-        )
-    ''')
     conn.commit()
+    return cursor
 
 #hash the password
 def hash_password(password: str) -> str:
@@ -98,6 +85,14 @@ def getTableColumnNames(table_name):
     cursor.execute(f"PRAGMA table_info({table_name})")
     columns = [col[1] for col in cursor.fetchall()]
     return columns
+
+def swapUnderToSpace(text):
+    text = text.replace("_", " ")
+    return text
+
+def swapSpaceToUnder(text):
+    text = text.replace(" ", "_")
+    return text
 
 # Close the database connection when done
 def closeDB():

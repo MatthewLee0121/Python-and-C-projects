@@ -332,6 +332,7 @@ class ViewWindow:
         self.populateTableNameListBox()
 
     def populateTableNameListBox(self):
+        table_names = []
         table_names = backend.getTableNames()
 
         self.TableNameListbox.delete(0, tk.END)
@@ -342,7 +343,7 @@ class ViewWindow:
             elif table_name == 'sqlite_sequence':
                 pass
             else:
-                self.TableNameListbox.insert(tk.END, table_name)
+                self.TableNameListbox.insert(tk.END, backend.swapUnderToSpace(table_name))
 
     def showTable(self):
 
@@ -350,11 +351,13 @@ class ViewWindow:
         selectedTableTuple = self.TableNameListbox.curselection()
         selectedTable = self.TableNameListbox.get(selectedTableTuple[0])
         self.canvas.itemconfig(self.tableNameTextBox, text=str(selectedTable))
+        selectedTable = backend.swapSpaceToUnder(selectedTable)
 
         rows = backend.viewDBTable(selectedTable)
         columns = backend.getTableColumnNames(selectedTable)
+        columns = [backend.swapUnderToSpace(col) for col in columns]
+        header = " | ".join(f"{col}:" for col in columns)
 
-        header = " | ".join(f"{col}" for col in columns)
         self.ViewTableListbox.insert(tk.END, header)
         self.ViewTableListbox.insert(tk.END, "-" * len(header))
 
@@ -456,6 +459,6 @@ class ViewWindow:
         HomeWindow()
 
 if __name__ == "__main__": 
-    #LogInWindow()
-    HomeWindow()
+    LogInWindow()
+    #HomeWindow()
     #ViewWindow()

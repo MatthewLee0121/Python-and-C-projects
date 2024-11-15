@@ -71,7 +71,7 @@ def CreateHomeScreen():
     listbox_view_test.grid(row=0, column=11, columnspan=2, rowspan=6)
 
 
-    table_names = get_table_names()
+    table_names = getTableNames()
     selected_table = tk.StringVar(root)
     selected_table.set(str(table_names[0]))
 
@@ -541,7 +541,7 @@ def loadViewWindow():
     )
 
     button_image_2 = PhotoImage(
-        file=relative_to_assets("button_2.png"))
+        file=relative_to_assets("logo.png"))
     button_2 = Button(
         image=button_image_2,
         borderwidth=0,
@@ -557,7 +557,7 @@ def loadViewWindow():
     )
 
     button_image_3 = PhotoImage(
-        file=relative_to_assets("button_3.png"))
+        file=relative_to_assets("logo.png"))
     button_3 = Button(
         image=button_image_3,
         borderwidth=0,
@@ -573,7 +573,7 @@ def loadViewWindow():
     )
 
     button_image_4 = PhotoImage(
-        file=relative_to_assets("button_4.png"))
+        file=relative_to_assets("logo.png"))
     button_4 = Button(
         image=button_image_4,
         borderwidth=0,
@@ -589,7 +589,7 @@ def loadViewWindow():
     )
     
     button_image_5 = PhotoImage(
-        file=relative_to_assets("button_5.png"))
+        file=relative_to_assets("logo.png"))
     button_5 = Button(
         image=button_image_5,
         borderwidth=0,
@@ -626,8 +626,8 @@ def loadViewWindow():
 #comment these out when working on different screens
 #LoadLogIn()
 #LoadHomeWindow()
-#CreateHomeScreen()
-loadViewWindow()
+CreateHomeScreen()
+#loadViewWindow()
 
 # Close the database when GUI is closed
 closeDB()
