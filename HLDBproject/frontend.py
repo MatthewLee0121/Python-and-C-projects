@@ -459,6 +459,6 @@ class ViewWindow:
         HomeWindow()
 
 if __name__ == "__main__": 
-    LogInWindow()
+    #LogInWindow()
     #HomeWindow()
-    #ViewWindow()
+    ViewWindow()
