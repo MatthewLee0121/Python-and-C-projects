@@ -31,7 +31,7 @@ def bisectionMethod(f, a, b, tolerance=1e-6, max_iterations=100):
     
     return midpoint(a, b)
 
-root = bisectionMethod(outputOfFx, -1.5, 4)
+root = bisectionMethod(outputOfFx, 1.5, 4)
 print("Root found:", root)
 
 endtime = time.time()
