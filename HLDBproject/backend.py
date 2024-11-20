@@ -2,6 +2,7 @@ import sqlite3
 import os
 from tkinter import messagebox as msg
 import hashlib
+import pandas as pd
 
 # Set up the database connection (global variables might fix this later to not be a global but will develop the programme more)
 db_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'HLDB.db')
@@ -67,6 +68,9 @@ def viewDBTable(table_name):
     rows = cursor.fetchall()
     return rows
 
+def createpandasdf(rows, columns):
+    pandasdf = pd.DataFrame(rows, columns=columns)
+    return pandasdf
 
 # Function to add a new entry to the test table
 def add2Test(table_name, test_id, name, age):
