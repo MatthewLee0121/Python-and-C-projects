@@ -332,7 +332,6 @@ class ViewWindow:
         self.populateTableNameListBox()
 
     def populateTableNameListBox(self):
-        table_names = []
         table_names = backend.getTableNames()
 
         self.TableNameListbox.delete(0, tk.END)
