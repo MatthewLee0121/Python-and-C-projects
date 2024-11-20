@@ -10,8 +10,14 @@ conn = sqlite3.connect(db_path)
 # Function to initialize the test table
 def initialiseDB():
     cursor = conn.cursor()
+    cursor.execute('''
+            CREATE TABLE IF NOT EXISTS testtable (
+                   test_id INTERGER PRIMARY KEY,
+                   name TEXT NOT NULL,
+                   age INTERGER NOT NULL
+                )
+            ''')#look into serial datatype
     conn.commit()
-    return cursor
 
 #hash the password
 def hash_password(password: str) -> str:
