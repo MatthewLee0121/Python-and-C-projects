@@ -11,7 +11,7 @@ def midpoint(x1, x2):
     return (x1 + x2) / 2
 
 def outputOfFx(x):
-    return (x ** 2) - (3 * x) + 2
+    return (x ** 2) - (3 * x) + 2 
 
 def bisectionMethod(f, a, b, tolerance=1e-6, max_iterations=100):
     if not signChange(f(a), f(b)):
