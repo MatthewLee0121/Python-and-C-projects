@@ -115,7 +115,7 @@ def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
 def write_to_new_file(data):
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values1.txt', 'a') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\python_projects\Collatz conjecture\stored_values1.txt', 'a') as file:
         file.write(str(data) + '\n')
 
 def send_to_database(data):
@@ -131,7 +131,7 @@ def send_to_database(data):
 
 def get_dictionarys(t):
     dicts = []
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored_values1.txt', 'r') as file:
+    with open(r'C:\Users\mat_m\Coding_with_beans\python_projects\Collatz conjecture\stored_values1.txt', 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(t):
                 try:

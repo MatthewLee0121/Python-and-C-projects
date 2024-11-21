@@ -353,12 +353,12 @@ class ViewWindow:
         selectedTable = backend.swapSpaceToUnder(selectedTable)
 
         rows = backend.viewDBTable(selectedTable)
-        rows = backend.viewDBTable(selectedTable)
         columns = backend.getTableColumnNames(selectedTable)
-        print(columns)
-        columns = backend.getTableColumnNames(selectedTable)
+#        dataframe = backend.createpandasdf(rows, columns)
         columns = [backend.swapUnderToSpace(col) for col in columns]
         header = " | ".join(f"{col}:" for col in columns)
+        # for i in range(len(dataframe)):
+        #     self.ViewTableListbox.insert(tk.END, dataframe.iloc[i])
 
         self.ViewTableListbox.insert(tk.END, header)
         self.ViewTableListbox.insert(tk.END, "-" * len(header))
@@ -459,6 +459,8 @@ class ViewWindow:
     def Button_home_pressed(self):
         self.ViewWindow.destroy()
         HomeWindow()
+
+
 
 if __name__ == "__main__": 
     LogInWindow()

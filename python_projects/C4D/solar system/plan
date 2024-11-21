@@ -1,0 +1,10 @@
+To make the solar system animated using python in cinema 4d
+
+to do list:
+1) make each planet and a skin and a background
+2) work out ratios for spinning so they spin at respective speeds
+3) work out the ratio distance between each planet
+4) work out a good script to make the planet orbit around the x and z plane
+5) incorporate Y plane movememnt on planets that require
+6) tracers to show planet orbit
+7) replace cirular orbits with eliptical

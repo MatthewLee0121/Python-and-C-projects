@@ -1,0 +1,10 @@
+import c4d
+
+def main():
+    cube = c4d.BaseObject(c4d.Ocube) # creates the cube object
+    doc.InsertObject(cube) #inserts the object into the current document
+    
+    c4d.EventAdd() # updates the c4d document to apply changes
+    
+if __name__=='__main__':
+    main()

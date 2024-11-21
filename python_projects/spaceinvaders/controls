@@ -1,0 +1,119 @@
+import turtle
+import math
+import time
+#background turtle code
+turtle.bgcolor('black')
+window = turtle.Screen()
+#turtle.addshape(r"C:\Users\matty\Pictures\butterfly-icon.jpg")
+#turtle.addshape(r"C:\Users\matty\Pictures\Screenshot 2023-12-28 194935.gif")
+
+#global variables
+counter = 0
+test_lives = 4
+
+#player turtle code
+player = turtle.Turtle()
+player.color('white')
+player.shape("turtle")
+player.penup()
+player.left(90)
+player.goto(0.00 , -200)
+
+#gun code
+gun = turtle.Turtle()
+gun.color('')
+gun.left(90)
+gun.goto(0.00, -100)
+
+#test object
+test = turtle.Turtle()
+test.color('white')
+test.shape("turtle")
+test.penup()
+test.speed(1)
+test.goto(-window.window_width() / 2, -50)
+
+def move_test():
+
+    test.forward(2)  
+    y = math.sin(test.xcor() / 20) * 100
+    test.goto(test.xcor(), y)
+    if test.xcor() > window.window_width() / 2:
+        test.goto(-window.window_width() / 2, y)
+
+    window.ontimer(move_test, 10)
+
+def moveleft():
+
+
+      player.speed(0)
+      player.left(90)
+      player.forward(50)
+      player.right(90)
+      gun.goto(player.pos())
+      check_test_movement()
+  
+
+
+def moveright():
+
+    player.speed(0)
+    player.right(90)
+    player.forward(50)
+    player.left(90)
+    gun.goto(player.pos())
+    check_test_movement()
+
+    
+
+def shootgun():
+
+     global counter
+     bullet = gun.clone()
+     bullet.color("white")
+     bullet.shape("triangle")
+     bullet.penup()
+
+     while bullet.ycor() < window.window_height():
+         for x in range(400):
+             bullet.forward((x + 50))
+             if bullet.ycor() > test.ycor():
+                 bullet.color("")
+                 bullet.hideturtle()
+             distance_to_test = bullet.distance(test)
+
+             if distance_to_test < 50:
+                 counter += 1
+                 print(f"hit! you score is {counter}")
+             else:
+                 continue
+
+             if counter >= test_lives:
+                 test.hideturtle()
+                 print("THE GURN IS VANQUISHED!")
+                 test.goto(-1000, 0)
+                 break
+            
+def follow():
+ gun.goto(player.pos())
+ window.ontimer(follow, 10)
+
+def check_test_movement():
+  pos_1 = [test.xcor(), test.ycor()]
+  move_test()
+  pos_2 = [test.xcor(), test.ycor()]
+  # print(pos_1, pos_2)
+  if pos_1 == pos_2:
+    move_test()
+  window.ontimer(check_test_movement, 10000)
+
+#key commands
+move_test()
+
+window.onkeypress(moveleft, "Left")
+window.onkeypress(moveright, "Right")
+window.onkeypress(shootgun, 'space')
+window.listen()
+
+turtle.done()
+time.sleep(2)
