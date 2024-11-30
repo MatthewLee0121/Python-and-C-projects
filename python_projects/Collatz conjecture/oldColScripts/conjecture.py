@@ -17,6 +17,7 @@ import sqlite3
 import json
 import sys
 import matplotlib.pyplot as plt
+import os
 
 values = None
 
@@ -54,12 +55,6 @@ def main():
         what_do = " "
         return what_do
     if what_do[0] == "5":
-        dictionarys = get_dictionarys(100)
-        plot_multi_line_graph(dictionarys)
-        dictionarys = get_dictionarys(1000)
-        plot_multi_line_graph(dictionarys)
-        dictionarys = get_dictionarys(10000)
-        plot_multi_line_graph(dictionarys)
         dictionarys = get_dictionarys(50000)
         plot_multi_line_graph(dictionarys)
     if what_do[0] == "6":
@@ -115,7 +110,8 @@ def power_of_two(num):
     return num > 0 and (num & (num - 1)) == 0 #checks if greater than 1 and only 1 set bit
 
 def write_to_new_file(data):
-    with open(r'C:\Users\mat_m\Coding_with_beans\python_projects\Collatz conjecture\stored_values1.txt', 'a') as file:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stored_value5')
+    with open(path, 'a') as file:
         file.write(str(data) + '\n')
 
 def send_to_database(data):
@@ -131,7 +127,8 @@ def send_to_database(data):
 
 def get_dictionarys(t):
     dicts = []
-    with open(r'C:\Users\mat_m\Coding_with_beans\python_projects\Collatz conjecture\stored_values1.txt', 'r') as file:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stored_value5')
+    with open(path, 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(t):
                 try:
@@ -144,7 +141,8 @@ def get_dictionarys(t):
 
 def get_dictionarys6():
     highest_values = {}  # Initialize dictionary to store the highest values for each key
-    with open(r'C:\Users\mat_m\Coding_with_beans\Collatz conjecture\stored values(3n+1)', 'r') as file:
+    path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stored_value5')
+    with open(path, 'r') as file:
         for line_num, line in enumerate(file):
             if line_num in range(10000):
                 try:

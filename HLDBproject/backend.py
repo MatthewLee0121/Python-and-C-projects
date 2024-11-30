@@ -10,6 +10,7 @@ conn = sqlite3.connect(db_path)
 
 # Function to initialize the test table
 def initialiseDB():
+    #maybe redundant
     cursor = conn.cursor()
     cursor.execute('''
             CREATE TABLE IF NOT EXISTS testtable (
@@ -22,6 +23,7 @@ def initialiseDB():
 
 #hash the password
 def hash_password(password: str) -> str:
+    #maybe find better encoder
     return hashlib.sha256(password.encode()).hexdigest()
 
 #initiates the username and password table
@@ -97,10 +99,12 @@ def getTableColumnNames(table_name):
     return columns
 
 def swapUnderToSpace(text):
+    #try to not use this easy to bug out
     text = text.replace("_", " ")
     return text
 
 def swapSpaceToUnder(text):
+    #try to not use this easy to bug out
     text = text.replace(" ", "_")
     return text
 
