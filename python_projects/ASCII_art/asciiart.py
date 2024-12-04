@@ -237,6 +237,7 @@ if __name__ == '__main__':
 
         while True:
             try:
+                cap.set(cv2.CAP_PROP_POS_FRAMES, frame_count)
                 ret, frame = cap.read() #if ret is true then frame was successful if its false we have an error or end of video
 
                 if not ret: # ends loop on error or end of video
@@ -247,20 +248,20 @@ if __name__ == '__main__':
                 cv2.imwrite(jpeg_filename, frame) #sets a new jpeg file in the dump folder for the frame
 
                 # Get ASCII art for the saved frame and append it to the list
-                ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
-                ascii_art_list.append(ascii_art)
+               # ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
+               # ascii_art_list.append(ascii_art)
 
                 # Delete the file after obtaining ASCII art
-                os.remove(jpeg_filename)
+               # os.remove(jpeg_filename)
 
-                frame_count += 1
+                frame_count += 22
 
             except Exception as e:
                 print("Error:", e)
 
         cap.release()
         
-        jpeg_to_string(ascii_art_list)
+        #jpeg_to_string(ascii_art_list)
 
     
 
