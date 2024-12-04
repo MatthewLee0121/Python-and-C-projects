@@ -322,7 +322,7 @@ class ViewWindow:
         for name, x1, y1, width, height in listbox_specs:
             listbox = tk.Listbox(
                 self.ViewWindow,
-                bg="#FFFFFF",
+                bg="#FFFFFF",   
                 font=("Kodchasan Regular", 12),
                 selectbackground="#C3CDE0"
             )
