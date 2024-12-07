@@ -224,7 +224,7 @@ if __name__ == '__main__':
          variable -- explination \n
          variable -- explination \n
          variable -- explination \n
-         variable -- explination \n
+         variable -- explination \n 
          variable -- explination \n
         -----------------------------------------------------------------------------\n
         Overview: \n
@@ -248,11 +248,11 @@ if __name__ == '__main__':
                 cv2.imwrite(jpeg_filename, frame) #sets a new jpeg file in the dump folder for the frame
 
                 # Get ASCII art for the saved frame and append it to the list
-               # ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
-               # ascii_art_list.append(ascii_art)
+                ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
+                ascii_art_list.append(ascii_art)
 
-                # Delete the file after obtaining ASCII art
-               # os.remove(jpeg_filename)
+                #Delete the file after obtaining ASCII art
+                os.remove(jpeg_filename)
 
                 frame_count += 22
 
@@ -267,7 +267,7 @@ if __name__ == '__main__':
 
     def play_video(ascii_label, ascii_art_list):
         i = 0
-        while True:  # Loop indefinitely
+        while True:
             time.sleep(0.03334)
             ascii_label.config(text=ascii_art_list[i])
             ascii_label.update()

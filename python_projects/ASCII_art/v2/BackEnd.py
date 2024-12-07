@@ -1,8 +1,8 @@
-import numpy as np
+import os
 from PIL import Image
 import cv2
+import numpy as np
 
-# ASCII characters arranged by rough density
 ascii_characters_by_density = [
     " ", ".", ",", ":", ";", "i", "!", "|", "1", "t", "f", "L", "I", "(", ")", "[", "]", "{", "}", "r", "c",
     "*", "+", "=", "7", "?", "v", "x", "J", "3", "n", "o", "s", "z", "5", "2", "S", "F", "C", "Z", "U", "O",
@@ -14,37 +14,46 @@ ascii_characters_by_density = [
     "k", "6", "%", "E", "W", "B", "M", "#"
 ]
 
-def get_ascii_art(image_path, rows, columns, line_detection):
-    if line_detection:
-        image = cv2.imread(image_path)
-        img = edge_detection(image)
-        img = Image.fromarray(img)
-    else:
-        img = Image.open(image_path)
+def get_ascii_art(image_path, block_size, line_detection):
+    # Open and process the image
+    try:
+        if line_detection:
+            image = cv2.imread(image_path)
+            img = edge_detection(image)
+            img = Image.fromarray(img)
+        else:
+            img = Image.open(image_path)
+            
+        img = img.convert("L")  # Convert to grayscale
 
-    # Convert the image to grayscale mode
-    img = img.convert("L")
-    pixels = img.load()
-    width, height = img.size
+        # Calculate new dimensions based on the block size
+        width, height = img.size
+        new_width = width // block_size
+        new_height = height // block_size
 
-    # Calculate min and max brightness values for dynamic scaling
-    min_brightness, max_brightness = 256, 0
-    for y in range(height):
-        for x in range(width):
-            brightness = pixels[x, y]
-            min_brightness = min(brightness, min_brightness)
-            max_brightness = max(brightness, max_brightness)
+        # Resize the image
+        img = img.resize((new_width, new_height))
 
-    # Generate ASCII art
-    ascii_art = ""
-    for y in range(0, height, rows):
-        ascii_art += "\n"
-        for x in range(0, width, columns):
-            brightness = pixels[x, y]
-            brightness_index = int(((brightness - min_brightness) / (max_brightness - min_brightness)) * (len(ascii_characters_by_density) - 1))
-            ascii_art += ascii_characters_by_density[brightness_index]
-    
-    return ascii_art
+        # Generate ASCII art
+        ascii_art = ""
+        pixels = img.load()
+        for y in range(new_height):
+            for x in range(new_width):
+                brightness = pixels[x, y]
+                char_index = int((brightness / 255) * (len(ascii_characters_by_density) - 1))
+                ascii_art += ascii_characters_by_density[char_index]
+            ascii_art += "\n"
+        
+        return ascii_art
+    except Exception as e:
+        raise RuntimeError(f"Failed to process image: {e}")
+
+def save_ascii_art(ascii_art, file_path):
+    try:
+        with open(file_path, "w") as file:
+            file.write(ascii_art)
+    except Exception as e:
+        raise RuntimeError(f"Failed to save ASCII art: {e}")
 
 def edge_detection(image):
     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
