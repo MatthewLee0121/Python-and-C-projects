@@ -1,11 +1,12 @@
 import tkinter as tk
 from tkinter import filedialog, messagebox
+from tkinter import ttk  # Import ttk for progress bar
 import cv2
 import numpy as np
 from PIL import Image
 import time
 import os
-import BackEnd  # Assuming the backend code is in a module named BackEnd
+import BackEndV  # Assuming the backend code is in a module named BackEndV
 
 # Global variables to store selected file and frames list
 selected_video_path = None
@@ -22,7 +23,7 @@ def select_video(preview_widget):
     else:
         messagebox.showwarning("No File Selected", "Please select a video file.")
 
-def generate_ascii_for_video(preview_widget, block_size, line_detection):
+def generate_ascii_for_video(preview_widget, block_size, line_detection, progress_bar):
     """Function to generate ASCII art for each frame in the video."""
     global selected_video_path, ascii_frames
 
@@ -35,6 +36,11 @@ def generate_ascii_for_video(preview_widget, block_size, line_detection):
 
             # Clear the frames list
             ascii_frames = []
+            
+            # Get the total number of frames in the video
+            total_frames = int(video_capture.get(cv2.CAP_PROP_FRAME_COUNT))
+            progress_bar['maximum'] = total_frames  # Set the maximum value of progress bar
+            progress_bar['value'] = 0  # Start with the value at 0
 
             while video_capture.isOpened():
                 ret, frame = video_capture.read()
@@ -45,6 +51,10 @@ def generate_ascii_for_video(preview_widget, block_size, line_detection):
                 frame_ascii = process_frame_to_ascii(frame, block_size, line_detection)
                 ascii_frames.append(frame_ascii)
 
+                # Update the progress bar
+                progress_bar['value'] += 1
+                progress_bar.update()  # Update progress bar
+
             # Display the first frame in the preview widget
             preview_widget.delete("1.0", tk.END)  # Clear previous content
             preview_widget.insert(tk.END, ascii_frames[0])
@@ -54,16 +64,18 @@ def generate_ascii_for_video(preview_widget, block_size, line_detection):
 
         except Exception as e:
             messagebox.showerror("Error", f"Failed to process video: {e}")
+            print("Error", f"Failed to process video: {e}")
     else:
         messagebox.showwarning("No File Selected", "Please select a video file first.")
 
 def process_frame_to_ascii(frame, block_size, line_detection):
     """Convert a video frame to ASCII art."""
     if line_detection:
-        frame = edge_detection(frame)  # Apply edge detection if required
+        frame = BackEndV.edge_detection(frame)  # Apply edge detection if required
 
-    # Convert the frame to grayscale
-    frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    # Convert the frame to grayscale if it's not already
+    if len(frame.shape) == 3:  # Check if frame has 3 channels (BGR/RGB)
+        frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # Calculate new dimensions based on the block size
     height, width = frame.shape
@@ -78,8 +90,8 @@ def process_frame_to_ascii(frame, block_size, line_detection):
     for y in range(new_height):
         for x in range(new_width):
             brightness = resized_frame[y, x]
-            char_index = int((brightness / 255) * (len(BackEnd.ascii_characters_by_density) - 1))
-            ascii_art += BackEnd.ascii_characters_by_density[char_index]
+            char_index = int((brightness / 255) * (len(BackEndV.ascii_characters_by_density) - 1))
+            ascii_art += BackEndV.ascii_characters_by_density[char_index]
         ascii_art += "\n"
 
     return ascii_art
@@ -113,7 +125,7 @@ def save_art(preview_widget):
         if file_path:
             try:
                 # Save ASCII art to the file
-                BackEnd.save_ascii_art(ascii_art, file_path)
+                BackEndV.save_ascii_art(ascii_art, file_path)
                 messagebox.showinfo("Save", "ASCII Art saved successfully!")
             except Exception as e:
                 messagebox.showerror("Error", f"Failed to save ASCII art: {e}")
@@ -132,6 +144,7 @@ def create_main():
     # Variables
     block_size_var = tk.IntVar(value=9)
     line_detection = tk.BooleanVar()
+    current_font_size = tk.IntVar(value=12)  # Initial font size
 
     # Top frame for settings
     settings_frame = tk.Frame(main_window)
@@ -156,7 +169,8 @@ def create_main():
         command=lambda: generate_ascii_for_video(
             preview_widget,
             block_size_var.get(),
-            line_detection.get()
+            line_detection.get(),
+            progress_bar  # Pass progress bar
         ),
         width=20,
         height=2
@@ -192,7 +206,7 @@ def create_main():
     preview_widget = tk.Text(
         preview_frame,
         wrap=tk.WORD,
-        font=("Courier", block_size_var.get()),
+        font=("Courier", current_font_size.get()),
         bg="#ffffff",
         fg="#000000"
     )
@@ -202,6 +216,29 @@ def create_main():
     scrollbar = tk.Scrollbar(preview_frame, command=preview_widget.yview)
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     preview_widget.config(yscrollcommand=scrollbar.set)
+
+    # Progress bar for video processing
+    progress_bar = ttk.Progressbar(
+        settings_frame,
+        orient=tk.HORIZONTAL,
+        length=200,
+        mode="determinate"
+    )
+    progress_bar.grid(row=3, column=0, columnspan=2, pady=10)
+
+    # Function to handle zoom (mouse wheel with Shift)
+    def mouse_wheel(event):
+        """Zoom the ASCII art in and out."""
+        if event.state & 0x1:  # Shift key held
+            new_size = current_font_size.get() + (1 if event.delta > 0 else -1)
+            if 5 <= new_size <= 30:
+                current_font_size.set(new_size)
+                preview_widget.config(font=("Courier", current_font_size.get()))
+        else:
+            preview_widget.yview_scroll(-1 * (event.delta // 120), "units")
+
+    # Bind mouse wheel to the preview widget
+    preview_widget.bind("<MouseWheel>", mouse_wheel)
 
     # Play video button
     play_button = tk.Button(
