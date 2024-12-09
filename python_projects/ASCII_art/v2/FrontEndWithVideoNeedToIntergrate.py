@@ -1,19 +1,26 @@
 import tkinter as tk
-from tkinter import filedialog, messagebox
-from tkinter import ttk  # Import ttk for progress bar
+from tkinter import filedialog, messagebox, ttk
 import cv2
 import numpy as np
 from PIL import Image
 import time
 import os
-import BackEndV  # Assuming the backend code is in a module named BackEndV
+import BackEndV 
 
 # Global variables to store selected file and frames list
 selected_video_path = None
 ascii_frames = []
 
-def select_video(preview_widget):
-    """Function to select an MP4 file."""
+def select_file(preview_widget, fileTypeMp4):
+    """Function to determine if the file type is a video or image."""
+    if fileTypeMp4.get():  # Use .get() to check BooleanVar value
+        select_Mp4(preview_widget)
+    else:
+        select_image(preview_widget)
+
+
+def select_Mp4(preview_widget):
+    """Function to select a Mp4 file."""
     global selected_video_path
     selected_video_path = filedialog.askopenfilename(filetypes=[("Video Files", "*.mp4;*.avi;*.mov")])
     if selected_video_path:
@@ -22,6 +29,17 @@ def select_video(preview_widget):
         preview_widget.insert(tk.END, "Video selected. Ready to generate ASCII art!")
     else:
         messagebox.showwarning("No File Selected", "Please select a video file.")
+
+def select_image(preview_widget):
+    """Function to select an image file."""
+    global selected_file_path
+    selected_file_path = filedialog.askopenfilename(filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.gif")])
+    if selected_file_path:
+        messagebox.showinfo("Image Selected", f"Selected file: {selected_file_path}")
+        preview_widget.delete("1.0", tk.END)  # Clear preview widget
+        preview_widget.insert(tk.END, "Image selected. Ready to generate ASCII art!")
+    else:
+        messagebox.showwarning("No File Selected", "Please select an image file.")
 
 def generate_ascii_for_video(preview_widget, block_size, line_detection, progress_bar):
     """Function to generate ASCII art for each frame in the video."""
@@ -97,6 +115,12 @@ def process_frame_to_ascii(frame, block_size, line_detection):
 
     return ascii_art
 
+def update_button_text(button, fileTypeMp4):
+    """Update the button text based on the fileTypeMp4 value."""
+    button.config(
+        text="Select Video" if fileTypeMp4.get() else "Select Image"
+    )
+
 def play_video(preview_widget):
     """Function to play the generated ASCII art as a video."""
     global ascii_frames
@@ -145,6 +169,7 @@ def create_main():
     # Variables
     block_size_var = tk.IntVar(value=9)
     line_detection = tk.BooleanVar()
+    fileTypeMp4 = tk.BooleanVar()
     current_font_size = tk.IntVar(value=12)  # Initial font size
 
     # Top frame for settings
@@ -152,16 +177,19 @@ def create_main():
     settings_frame.pack(side=tk.TOP, fill=tk.X, padx=10, pady=10)
 
     # Button to select a video
-    select_video_button = tk.Button(
+    select_file_button = tk.Button(
         settings_frame,
-        text="Select Video",
+        text="Select Image",
         font=("Rockabilly", 10),
-        command=lambda: select_video(preview_widget),
+        command=lambda: select_file(preview_widget, fileTypeMp4),
         width=20,
         height=2
     )
-    select_video_button.grid(row=0, column=0, padx=5, pady=5)
 
+    fileTypeMp4.trace_add("write", lambda *args: update_button_text(select_file_button, fileTypeMp4))
+
+    select_file_button.grid(row=0, column=0, padx=5, pady=5)
+    
     # Button to generate ASCII art for the video
     generate_art_button = tk.Button(
         settings_frame,
@@ -199,6 +227,16 @@ def create_main():
     )
     LineDetection_box.grid(row=0, column=5, columnspan=2, pady=5)
 
+        # Line detection checkbox
+    mp4jpeg_box = tk.Checkbutton(
+        settings_frame,
+        text='Video?',
+        variable=fileTypeMp4,
+        onvalue=True,
+        offvalue=False,
+    )
+    mp4jpeg_box.grid(row=0, column=7, columnspan=2, pady=5)
+    
     # Frame for preview widget
     preview_frame = tk.Frame(main_window)
     preview_frame.pack(side=tk.BOTTOM, expand=True, fill=tk.BOTH, padx=10, pady=10)
