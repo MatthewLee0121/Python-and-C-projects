@@ -10,7 +10,7 @@ ascii_characters_by_density = [
     "E", "%", "6", "k", "R", "P", "N", "T", "4", "K", "E", "U", "h", "y", "b", "g", "j", "@", "^", "a", "u",
     "e", "l", "I", "T", "q", "H", "D", "W", "M", "B", "Q", "G", "N", "O", "Z", "S", "C", "V", "X", "Y", "K",
     "A", "0", "9", "8", "Q", "O", "Z", "C", "V", "S", "X", "Y", "N", "K", "M", "G", "B", "W", "H", "D", "Q",
-    "E", "U", "T", "l", "y", "u", "a", "^", "@", "j", "g", "b", "y", "h", "U", "K", "4", "T", "N", "P", "R",
+    "E", "U", "T", "l", "y", "u", "a", "^", "@", "j", "g", "b", "y", "h", ".", "K", "4", "T", "N", "P", "R",
     "k", "6", "%", "E", "W", "B", "M", "#"
 ]
 
@@ -57,6 +57,7 @@ def save_ascii_art(ascii_art, file_path):
 
 def edge_detection(frame):
     """Apply Canny edge detection on the frame."""
+
     # Check if the frame is already in grayscale (1 channel)
     if len(frame.shape) == 2:
         gray_frame = frame

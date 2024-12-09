@@ -254,7 +254,7 @@ if __name__ == '__main__':
                 #Delete the file after obtaining ASCII art
                 os.remove(jpeg_filename)
 
-                frame_count += 22
+                frame_count += 1
 
             except Exception as e:
                 print("Error:", e)
