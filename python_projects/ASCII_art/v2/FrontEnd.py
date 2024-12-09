@@ -16,7 +16,7 @@ def select_image(preview_widget):
     else:
         messagebox.showwarning("No File Selected", "Please select an image file.")
 
-def generate_art(preview_widget, font_size, block_size, line_detection):
+def generate_art(preview_widget, block_size, line_detection):
     """Function to generate ASCII art."""
     global selected_file_path
     if selected_file_path:

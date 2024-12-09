@@ -115,10 +115,33 @@ def process_frame_to_ascii(frame, block_size, line_detection):
 
     return ascii_art
 
-def update_button_text(button, fileTypeMp4):
+def generate_art(preview_widget, block_size, line_detection):
+    """Function to generate ASCII art."""
+    global selected_file_path
+    if selected_file_path:
+        try:
+            # Generate ASCII art using backend
+            ascii_art = BackEndV.get_ascii_art(selected_file_path, block_size, line_detection)
+
+            # Display ASCII art in the preview widget
+            preview_widget.delete("1.0", tk.END)  # Clear previous content
+            preview_widget.insert(tk.END, ascii_art)
+
+        except Exception as e:
+            messagebox.showerror("Error", f"Failed to process file: {e}")
+    else:
+        messagebox.showwarning("No File Selected", "Please select an image file first.")
+
+def update_select_button_text(button, fileTypeMp4):
     """Update the button text based on the fileTypeMp4 value."""
     button.config(
         text="Select Video" if fileTypeMp4.get() else "Select Image"
+    )
+
+def update_generate_button_text(button, fileTypeMp4):
+    """Update the button text based on the fileTypeMp4 value."""
+    button.config(
+        text="Generate Video" if fileTypeMp4.get() else "Generate Image"
     )
 
 def play_video(preview_widget):
@@ -135,7 +158,7 @@ def play_video(preview_widget):
             preview_widget.delete("1.0", tk.END)  # Clear previous content
             preview_widget.insert(tk.END, frame)
             preview_widget.update()  # Update the widget
-            time.sleep(0.1)  # 10 frames per second (adjust as needed)
+            time.sleep(0.03)  # 10 frames per second (adjust as needed)
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to play video: {e}")
@@ -186,25 +209,49 @@ def create_main():
         height=2
     )
 
-    fileTypeMp4.trace_add("write", lambda *args: update_button_text(select_file_button, fileTypeMp4))
+    fileTypeMp4.trace_add("write", lambda *args: update_select_button_text(select_file_button, fileTypeMp4))
 
     select_file_button.grid(row=0, column=0, padx=5, pady=5)
     
-    # Button to generate ASCII art for the video
+        # Define a function to decide which generate function to call
+    def handle_generate(preview_widget, fileTypeMp4, block_size_var, line_detection, progress_bar):
+        """Execute the appropriate generate function based on fileTypeMp4 value."""
+        if fileTypeMp4.get():
+            generate_ascii_for_video(
+                preview_widget,
+                block_size_var.get(),
+                line_detection.get(),
+                progress_bar
+            )
+        else:
+            generate_art(
+                preview_widget,
+                block_size_var.get(),
+                line_detection.get()
+            )
+
+    # Button to generate ASCII art
     generate_art_button = tk.Button(
         settings_frame,
         text="Generate ASCII Art",
         font=("Rockabilly", 10),
-        command=lambda: generate_ascii_for_video(
+        command=lambda: handle_generate(
             preview_widget,
-            block_size_var.get(),
-            line_detection.get(),
-            progress_bar  # Pass progress bar
+            fileTypeMp4,
+            block_size_var,
+            line_detection,
+            progress_bar
         ),
         width=20,
         height=2
     )
+
+    # Update button text dynamically based on fileTypeMp4
+    fileTypeMp4.trace_add("write", lambda *args: update_generate_button_text(generate_art_button, fileTypeMp4))
+
     generate_art_button.grid(row=0, column=1, padx=5, pady=5)
+
+
 
     # Block size scale
     block_size_scale = tk.Scale(
@@ -290,17 +337,30 @@ def create_main():
     # Create a frame to hold the buttons
     button_frame = tk.Frame(main_window)
     button_frame.pack(pady=10)
+    
 
-    # Play video button
-    play_button = tk.Button(
-        button_frame,
-        text="Play ASCII Art Video",
-        font=("Rockabilly", 10),
-        command=lambda: play_video(preview_widget),
-        width=20,
-        height=2
-    )
-    play_button.pack(side="left", padx=5)
+    def update_play_button(parent_frame, preview_widget, fileTypeMp4):
+        """Show or hide the Play button based on fileTypeMp4 value."""
+        for widget in parent_frame.winfo_children():
+            if getattr(widget, "is_play_button", False):
+                widget.destroy()  # Remove existing play button if it exists
+
+        if fileTypeMp4.get():
+            # Create the Play button for videos
+            play_button = tk.Button(
+                parent_frame,
+                text="Play ASCII Art Video",
+                font=("Rockabilly", 10),
+                command=lambda: play_video(preview_widget),
+                width=20,
+                height=2
+            )
+            play_button.is_play_button = True  # Tag to identify this button later
+            play_button.pack(side="left", padx=5)
+
+    fileTypeMp4.trace_add("write", lambda *args: update_play_button(button_frame, preview_widget, fileTypeMp4))
+    update_play_button(button_frame, preview_widget, fileTypeMp4)
+
 
     # Save ASCII art button
     save_button = tk.Button(
@@ -320,7 +380,7 @@ def create_main():
         length=200,
         mode="determinate"
     )
-    progress_bar.pack(side="left", padx=5)
+    progress_bar.pack(side="right", padx=5)
 
 
     return main_window
