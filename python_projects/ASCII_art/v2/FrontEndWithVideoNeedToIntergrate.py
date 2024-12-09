@@ -67,6 +67,7 @@ def generate_ascii_for_video(preview_widget, block_size, line_detection, progres
             print("Error", f"Failed to process video: {e}")
     else:
         messagebox.showwarning("No File Selected", "Please select a video file first.")
+        print("No File Selected", "Please select a video file first.")
 
 def process_frame_to_ascii(frame, block_size, line_detection):
     """Convert a video frame to ASCII art."""
@@ -80,7 +81,7 @@ def process_frame_to_ascii(frame, block_size, line_detection):
     # Calculate new dimensions based on the block size
     height, width = frame.shape
     new_width = width // block_size
-    new_height = height // block_size
+    new_height = height // (block_size * 2)
 
     # Resize the frame
     resized_frame = cv2.resize(frame, (new_width, new_height))
@@ -186,7 +187,7 @@ def create_main():
         variable=block_size_var,
         label="Block Size (Pixels per Character)"
     )
-    block_size_scale.grid(row=1, column=0, padx=5, pady=5)
+    block_size_scale.grid(row=0, column=3, padx=5, pady=5)
 
     # Line detection checkbox
     LineDetection_box = tk.Checkbutton(
@@ -196,7 +197,7 @@ def create_main():
         onvalue=True,
         offvalue=False,
     )
-    LineDetection_box.grid(row=2, column=0, columnspan=2, pady=5)
+    LineDetection_box.grid(row=0, column=5, columnspan=2, pady=5)
 
     # Frame for preview widget
     preview_frame = tk.Frame(main_window)
@@ -217,50 +218,72 @@ def create_main():
     scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
     preview_widget.config(yscrollcommand=scrollbar.set)
 
-    # Progress bar for video processing
-    progress_bar = ttk.Progressbar(
-        settings_frame,
-        orient=tk.HORIZONTAL,
-        length=200,
-        mode="determinate"
-    )
-    progress_bar.grid(row=3, column=0, columnspan=2, pady=10)
-
-    # Function to handle zoom (mouse wheel with Shift)
+    # Function to handle zoom (mouse wheel with Shift) or scrolling
     def mouse_wheel(event):
-        """Zoom the ASCII art in and out."""
+        """Zoom the ASCII art in and out with Shift, or scroll normally."""
         if event.state & 0x1:  # Shift key held
-            new_size = current_font_size.get() + (1 if event.delta > 0 else -1)
-            if 5 <= new_size <= 30:
+            # Zoom in or out
+            delta = 1 if event.delta > 0 else -1
+            new_size = current_font_size.get() + delta
+            if 1 <= new_size <= 30:
                 current_font_size.set(new_size)
                 preview_widget.config(font=("Courier", current_font_size.get()))
         else:
+            # Scroll vertically
             preview_widget.yview_scroll(-1 * (event.delta // 120), "units")
+
+    # Function to handle key-based zoom
+    def key_zoom(event):
+        """Zoom in or out using - and = keys."""
+        delta = 1 if event.char == '=' else -1 if event.char == '-' else 0
+        if delta:
+            new_size = current_font_size.get() + delta
+            if 1 <= new_size <= 30:
+                current_font_size.set(new_size)
+                preview_widget.config(font=("Courier", current_font_size.get()))
 
     # Bind mouse wheel to the preview widget
     preview_widget.bind("<MouseWheel>", mouse_wheel)
 
+    # Bind keyboard keys for zooming
+    preview_widget.bind("<KeyPress-=>", key_zoom)  # Increase font size
+    preview_widget.bind("<KeyPress-minus>", key_zoom)  # Decrease font size
+
+    # Create a frame to hold the buttons
+    button_frame = tk.Frame(main_window)
+    button_frame.pack(pady=10)
+
     # Play video button
     play_button = tk.Button(
-        main_window,
+        button_frame,
         text="Play ASCII Art Video",
         font=("Rockabilly", 10),
         command=lambda: play_video(preview_widget),
         width=20,
         height=2
     )
-    play_button.pack(pady=10)
+    play_button.pack(side="left", padx=5)
 
     # Save ASCII art button
     save_button = tk.Button(
-        main_window,
+        button_frame,
         text="Save ASCII Art",
         font=("Rockabilly", 10),
         command=lambda: save_art(preview_widget),
         width=20,
         height=2
     )
-    save_button.pack(pady=10)
+    save_button.pack(side="left", padx=5)
+
+        # Progress bar for video processing
+    progress_bar = ttk.Progressbar(
+        button_frame,
+        orient=tk.HORIZONTAL,
+        length=200,
+        mode="determinate"
+    )
+    progress_bar.pack(side="left", padx=5)
+
 
     return main_window
 
