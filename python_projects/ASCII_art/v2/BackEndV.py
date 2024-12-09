@@ -55,9 +55,16 @@ def save_ascii_art(ascii_art, file_path):
     except Exception as e:
         raise RuntimeError(f"Failed to save ASCII art: {e}")
 
-def edge_detection(frame):
-    """Apply Canny edge detection on the frame."""
-
+def edge_detection(frame, save_path="output"):
+    """Apply Canny edge detection on the frame and save intermediate frames."""
+    # Ensure the save directory exists
+    import os
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    
+    # Save the original frame as a JPEG
+    cv2.imwrite(os.path.join(save_path, "original_frame.jpg"), frame)
+    
     # Check if the frame is already in grayscale (1 channel)
     if len(frame.shape) == 2:
         gray_frame = frame
@@ -65,11 +72,15 @@ def edge_detection(frame):
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
     else:
         raise ValueError("Invalid frame format")
-
+    
+    # Save the grayscale frame as a JPEG
+    cv2.imwrite(os.path.join(save_path, "grayscale_frame.jpg"), gray_frame)
+    
     # Apply Gaussian blur to reduce noise and improve edge detection
     blurred_frame = cv2.GaussianBlur(gray_frame, (5, 5), 0)
-
+    
     # Apply Canny edge detection
     edges = cv2.Canny(blurred_frame, threshold1=100, threshold2=200)
 
+    cv2.imwrite(os.path.join(save_path, "edges_frame.jpg"), edges)
     return edges
