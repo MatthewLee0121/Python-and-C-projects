@@ -247,12 +247,12 @@ if __name__ == '__main__':
                 jpeg_filename = f"{selected_output_path}/frame_{frame_count:044}.jpg"
                 cv2.imwrite(jpeg_filename, frame) #sets a new jpeg file in the dump folder for the frame
 
-                # Get ASCII art for the saved frame and append it to the list
-                ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
-                ascii_art_list.append(ascii_art)
+                # # Get ASCII art for the saved frame and append it to the list
+                # ascii_art = get_ascii_art(jpeg_filename, rows.get(), columns.get(), line_detection.get())
+                # ascii_art_list.append(ascii_art)
 
-                #Delete the file after obtaining ASCII art
-                os.remove(jpeg_filename)
+                # #Delete the file after obtaining ASCII art
+                # os.remove(jpeg_filename)
 
                 frame_count += 1
 
