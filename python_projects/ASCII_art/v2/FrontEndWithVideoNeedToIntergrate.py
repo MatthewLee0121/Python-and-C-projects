@@ -18,10 +18,10 @@ def select_file(preview_widget, fileTypeMp4):
     else:
         select_image(preview_widget)
 
-
 def select_Mp4(preview_widget):
     """Function to select a Mp4 file."""
-    global selected_video_path
+    global selected_video_path, ascii_frames
+    check_frame_empty(preview_widget, ascii_frames)
     selected_video_path = filedialog.askopenfilename(filetypes=[("Video Files", "*.mp4;*.avi;*.mov")])
     if selected_video_path:
         messagebox.showinfo("Video Selected", f"Selected file: {selected_video_path}")
@@ -182,6 +182,14 @@ def save_art(preview_widget):
     else:
         messagebox.showwarning("No Art to Save", "There is no ASCII art to save. Please generate art first.")
 
+def check_frame_empty(preview_widget, ascii_frames):
+    if len(ascii_frames) == 0:
+        pass
+    else:
+        ascii_frames = []
+
+    preview_widget.delete("1.0", tk.END)
+
 def create_main():
     """Function to create the main window."""
     main_window = tk.Tk()
@@ -213,7 +221,6 @@ def create_main():
 
     select_file_button.grid(row=0, column=0, padx=5, pady=5)
     
-        # Define a function to decide which generate function to call
     def handle_generate(preview_widget, fileTypeMp4, block_size_var, line_detection, progress_bar):
         """Execute the appropriate generate function based on fileTypeMp4 value."""
         if fileTypeMp4.get():
@@ -233,7 +240,7 @@ def create_main():
     # Button to generate ASCII art
     generate_art_button = tk.Button(
         settings_frame,
-        text="Generate ASCII Art",
+        text="Generate ASCII Image",
         font=("Rockabilly", 10),
         command=lambda: handle_generate(
             preview_widget,
