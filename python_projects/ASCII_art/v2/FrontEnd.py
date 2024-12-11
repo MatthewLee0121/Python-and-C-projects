@@ -5,7 +5,7 @@ import numpy as np
 from PIL import Image
 import time
 import os
-import python_projects.ASCII_art.v2.BackEnd as BackEnd 
+import BackEnd 
 
 # Global variables to store selected file and frames list
 selected_video_path = None
