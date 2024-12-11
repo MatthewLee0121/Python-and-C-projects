@@ -10,7 +10,7 @@ ascii_characters_by_density = [
     "E", "%", "6", "k", "R", "P", "N", "T", "4", "K", "E", "U", "h", "y", "b", "g", "j", "@", "^", "a", "u",
     "e", "l", "I", "T", "q", "H", "D", "W", "M", "B", "Q", "G", "N", "O", "Z", "S", "C", "V", "X", "Y", "K",
     "A", "0", "9", "8", "Q", "O", "Z", "C", "V", "S", "X", "Y", "N", "K", "M", "G", "B", "W", "H", "D", "Q",
-    "E", "U", "T", "l", "y", "u", "a", "^", "@", "j", "g", "b", "y", "h", "U", "K", "4", "T", "N", "P", "R",
+    "E", "U", "T", "l", "y", "u", "a", "^", "@", "j", "g", "b", "y", "h", ".", "K", "4", "T", "N", "P", "R",
     "k", "6", "%", "E", "W", "B", "M", "#"
 ]
 
@@ -55,12 +55,51 @@ def save_ascii_art(ascii_art, file_path):
     except Exception as e:
         raise RuntimeError(f"Failed to save ASCII art: {e}")
 
-def edge_detection(image):
-    gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    blurred_image = cv2.GaussianBlur(gray_image, (3, 3), 0)
-    sobel_x = cv2.Sobel(blurred_image, cv2.CV_64F, 1, 0, ksize=3)
-    sobel_y = cv2.Sobel(blurred_image, cv2.CV_64F, 0, 1, ksize=3)
+def edge_detection(frame, save_path="output"):
+    """Apply Canny edge detection on the frame and save intermediate frames."""
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+    
+    # Save the original frame as a JPEG
+    cv2.imwrite(os.path.join(save_path, "original_frame.jpg"), frame)
+    
+    # Check if the frame is already in grayscale (1 channel)
+    if len(frame.shape) == 2:
+        gray_frame = frame
+    elif len(frame.shape) == 3:  # BGR image (3 channels)
+        gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+    else:
+        raise ValueError("Invalid frame format")
+    
+    # Save the grayscale frame as a JPEG
+    cv2.imwrite(os.path.join(save_path, "grayscale_frame.jpg"), gray_frame)
+    
+    # Apply Gaussian blur to reduce noise and improve edge detection
+    blurred_frame = cv2.GaussianBlur(gray_frame, (5, 5), 0)
+
+
+    sobel_x = cv2.Sobel(blurred_frame, cv2.CV_64F, 1, 0, ksize=3)
+    sobel_y = cv2.Sobel(blurred_frame, cv2.CV_64F, 0, 1, ksize=3)
+
     gradient_magnitude = np.sqrt(sobel_x ** 2 + sobel_y ** 2)
     gradient_magnitude *= 255.0 / gradient_magnitude.max()
     gradient_magnitude = np.uint8(gradient_magnitude)
-    return gradient_magnitude
+    edges = gradient_magnitude
+    return edges
+    
+    # # Apply Canny edge detection
+    # edges = cv2.Canny(blurred_frame, threshold1=100, threshold2=200)
+    
+    # cv2.imwrite(os.path.join(save_path, "edges_frame.jpg"), edges)
+    # return edges
+
+# def edge_detection(image):
+#     gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+#     blurred_image = cv2.GaussianBlur(gray_image, (3, 3), 0)
+#     sobel_x = cv2.Sobel(blurred_image, cv2.CV_64F, 1, 0, ksize=3)
+#     sobel_y = cv2.Sobel(blurred_image, cv2.CV_64F, 0, 1, ksize=3)
+#     gradient_magnitude = np.sqrt(sobel_x ** 2 + sobel_y ** 2)
+#     gradient_magnitude *= 255.0 / gradient_magnitude.max()
+#     gradient_magnitude = np.uint8(gradient_magnitude)
+#     return gradient_magnitude
+
