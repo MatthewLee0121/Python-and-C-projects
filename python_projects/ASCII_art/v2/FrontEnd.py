@@ -240,7 +240,7 @@ def create_main():
     # Button to generate ASCII art
     generate_art_button = tk.Button(
         settings_frame,
-        text="Generate ASCII Image",
+        text="Generate ASCII",
         font=("Rockabilly", 10),
         command=lambda: handle_generate(
             preview_widget,
@@ -366,6 +366,7 @@ def create_main():
             play_button.pack(side="left", padx=5)
 
     fileTypeMp4.trace_add("write", lambda *args: update_play_button(button_frame, preview_widget, fileTypeMp4))
+
     update_play_button(button_frame, preview_widget, fileTypeMp4)
 
 
