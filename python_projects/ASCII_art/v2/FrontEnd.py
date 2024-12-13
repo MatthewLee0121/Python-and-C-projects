@@ -158,7 +158,7 @@ def play_video(preview_widget):
             preview_widget.delete("1.0", tk.END)  # Clear previous content
             preview_widget.insert(tk.END, frame)
             preview_widget.update()  # Update the widget
-            time.sleep(0.03)  # 10 frames per second (adjust as needed)
+            time.sleep(0.0015)  # 10 frames per second (adjust as needed)
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to play video: {e}")
