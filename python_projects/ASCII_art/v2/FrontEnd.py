@@ -98,8 +98,8 @@ def process_frame_to_ascii(frame, block_size, line_detection):
 
     # Calculate new dimensions based on the block size
     height, width = frame.shape
-    new_width = width // block_size
-    new_height = height // (block_size * 2)
+    new_width = width // (block_size * 3)
+    new_height = height // (block_size * 6)
 
     # Resize the frame
     resized_frame = cv2.resize(frame, (new_width, new_height))
@@ -158,10 +158,22 @@ def play_video(preview_widget):
             preview_widget.delete("1.0", tk.END)  # Clear previous content
             preview_widget.insert(tk.END, frame)
             preview_widget.update()  # Update the widget
-            time.sleep(0.0015)  # 10 frames per second (adjust as needed)
+            time.sleep(0.03)  # 10 frames per second (adjust as needed)
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to play video: {e}")
+def save_video(ascii_frames):
+    """Function to save ascii video"""
+    ascii_art = ascii_frames
+    if len(ascii_frames) == 0:
+        messagebox.showinfo("Save", "Ascii_frames is empty")
+        return
+    
+    file_path = filedialog.asksaveasfilename(defaultextension=.txt, filetypes=[("Text Files", "*.txt")])
+
+    if not file_path:
+        messagebox.showinfo("")
+
 
 def save_art(preview_widget):
     """Function to save the generated ASCII art to a file."""
