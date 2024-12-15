@@ -180,15 +180,25 @@ def parent_to_curve_with_animation(obj, curve, frame_start=1, frame_end=250):
 
 def create_glowing_material(color=(1, 0, 0, 1), strength=5):
     """Create a glowing emission material."""
+    # Create a new material
     material = bpy.data.materials.new(name="GlowingMaterial")
     material.use_nodes = True
 
+    # Get the material's node tree and clear default nodes
     nodes = material.node_tree.nodes
+    nodes.clear()  # Remove all default nodes (e.g., Principled BSDF)
+
+    # Add Emission Node
     emission_node = nodes.new(type='ShaderNodeEmission')
+    emission_node.location = (0, 0)
     emission_node.inputs['Color'].default_value = color
     emission_node.inputs['Strength'].default_value = strength
 
+    # Add Material Output Node
     material_output_node = nodes.new(type='ShaderNodeOutputMaterial')
+    material_output_node.location = (200, 0)
+
+    # Link Emission to Material Output
     material.node_tree.links.new(emission_node.outputs['Emission'], material_output_node.inputs['Surface'])
 
     return material
