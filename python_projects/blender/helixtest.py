@@ -311,14 +311,14 @@ if bpy.context.mode != 'OBJECT':
 clear_scene()
 
 create_collections()
-
+material = create_glowing_material(color=(1, 0.0, 1, 1.0))
 add_plane()
 # Create helix and torus
 for i in range(21):
     helix = add_curveaceous_galore_shape(i)
     torus = add_torus(i)
     parent_to_curve_with_animation(torus, helix)    
-    material = create_glowing_material(color=(1, 0.0, 1, 1.0))
+    material = bpy.data.materials.get("GlowingMaterial")
     torus.data.materials.append(material)
     
 add_path()
