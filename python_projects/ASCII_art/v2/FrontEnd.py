@@ -169,7 +169,7 @@ def save_video(ascii_frames):
         messagebox.showinfo("Save", "Ascii_frames is empty")
         return
     
-    file_path = filedialog.asksaveasfilename(defaultextension=.txt, filetypes=[("Text Files", "*.txt")])
+    file_path = filedialog.asksaveasfilename(defaultextension=".txt", filetypes=[("Text Files", "*.txt")])
 
     if not file_path:
         messagebox.showinfo("")
